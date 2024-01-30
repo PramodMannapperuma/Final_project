@@ -1,10 +1,10 @@
-import './App.css'
+import SignUp from './Pages/UserAuth/UserSignup'
 
 function App() {
 
   return (
     <>
-      <h1>React App</h1>
+      <SignUp />
        
     </>
   )
