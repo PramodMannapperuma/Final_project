@@ -7,84 +7,81 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid"; // Import Grid component
 import { useState } from "react";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    FName: "",
-    LName: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
+  const [FName, setFName] = useState('');
+  const [LName, setLName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [gender, setGender] = useState('');
 
-  const [formDataError, setFormDataError] = useState(false)
+  // const [formDataError, setFormDataError] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { FName, LName, email, password } = formData;
-    if (FName && LName && email && password) {
-      console.log(FName, LName, email, password);
+    // const { FName, LName, email, password } = e.target.value;
+    if (FName && LName && email && password && gender) {
+      console.log(FName, LName, email, password, gender);
       // Here you can perform any actions like submitting the form data
     }
   };
 
   const handleDeleteClick = () => {
     // Clear the form data
-    setFormData({
-      FName: "",
-      LName: "",
-      email: "",
-      password: "",
-      confirmPassword: ""
-    });
+    setFName('');
+    setLName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setGender('Female');
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
+
 
   return (
-    <Container>
+    <Container maxWidth='sm' style={{marginTop:'150px'}}>
       <Typography variant="h5" component="h2" gutterBottom color="textPrimary">
         SignUp
       </Typography>
       <form autoComplete="off" onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
+        <Grid container justifyContent='center' spacing={2}>
           <Grid item xs={6}>
             <TextField
               name="FName"
-              value={formData.FName}
-              onChange={handleInputChange}
+              value={FName}
+              onChange={ (e)=> setFName(e.target.value)}
               size="small"
               required
               label="First Name"
               variant="outlined"
               fullWidth
-              error={formData.FName === ""}
+              // error={formData.FName === ""}
             />
           </Grid>
           <Grid item xs={6}>
             <TextField
               name="LName"
-              value={formData.LName}
-              onChange={handleInputChange}
+              value={LName}
+              onChange={ (e) => setLName(e.target.value)}
               size="small"
               required
               label="Last Name"
               variant="outlined"
               fullWidth
-              error={formData.LName === ""}
+              // error={formData.LName === ""}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               name="email"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={email}
+              onChange={ (e) => setEmail(e.target.value)}
               size="small"
               required
               label="E-mail"
@@ -95,8 +92,8 @@ const SignUp = () => {
           <Grid item xs={6}>
             <TextField
               name="password"
-              value={formData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={ (e) => setPassword(e.target.value)}
               size="small"
               required
               label="Password"
@@ -108,8 +105,8 @@ const SignUp = () => {
           <Grid item xs={6}>
             <TextField
               name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
+              value={confirmPassword}
+              onChange={ (e) => setConfirmPassword(e.target.value)}
               size="small"
               required
               label="Confirm Password"
@@ -118,13 +115,39 @@ const SignUp = () => {
               fullWidth
             />
           </Grid>
+          <Grid item xs={12} >
+            <FormLabel>Gender</FormLabel>
+            <RadioGroup row value={gender} onChange={(e) => setGender(e.target.value)}>
+              <FormControlLabel value="Male" control={<Radio />} label="Male" />
+              <FormControlLabel value="Female" control={<Radio />} label="Female" />
+              <FormControlLabel value="Other" control={<Radio />} label="Other" />
+            </RadioGroup>
+          </Grid>
         </Grid>
-        <Button onClick={handleDeleteClick} variant="outlined" startIcon={<DeleteIcon />}>
+        <Grid  style={{ display: 'flex', justifyContent: 'center',marginTop:'20px' }} item xs={12}>
+        <Button
+          onClick={handleDeleteClick}
+          variant="outlined"
+          startIcon={<DeleteIcon />}
+          style={{ marginRight: '25px',}}
+        >
           Delete
         </Button>
-        <Button type="submit" variant="contained" startIcon={<SendIcon />} endIcon={<KeyboardArrowRightIcon />}>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<SendIcon />}
+          endIcon={<KeyboardArrowRightIcon />}
+          // style={{display: "flex"}}
+        >
           Send
         </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography padding={2} variant="body2" color="textSecondary" align="center">
+            Already have an account? <Link to="/login">Login</Link> 
+          </Typography>
+        </Grid>
       </form>
     </Container>
   );
