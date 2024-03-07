@@ -19,7 +19,7 @@ const Login = () => {
     // const { FName, LName, email, password } = e.target.value;
     if (email && password) {
       console.log(email, password);
-      navigate('/home');
+      navigate('/reqdash');
       // Here you can perform any actions like submitting the form data
     }
   };
