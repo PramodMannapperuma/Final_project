@@ -15,16 +15,17 @@ import SendIcon from "@mui/icons-material/Send";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PropTypes from 'prop-types';
-import { collection, addDoc } from 'firebase/firestore';
-import { firestore } from '../../firebase';
+import PropTypes from "prop-types";
+import { collection, addDoc } from "firebase/firestore";
+import { firestore, auth } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-const AddInsurence = ({onAddInsurence}) => {
+const AddInsurence = ({ onAddInsurence }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
-  const [gender, setRole] = useState("");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,27 +34,44 @@ const AddInsurence = ({onAddInsurence}) => {
       alert("Passwords do not match!");
       return;
     }
-    // Create a new user object
-    const newInsurence = {
-      name,
-      email,
-      password,
-      gender,
-    };
-    
-    try{
-      const docRef = await addDoc(collection(firestore, 'insurenceCo'), newInsurence);
+
+    try {
+      const insurenceCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const newInsurenc = insurenceCredentials.user;
+
+      if (!newInsurenc.uid) {
+        console.error("uid not found");
+        return;
+      }
+      // Create a new user object
+      const newInsurence = {
+        name,
+        email,
+        password,
+        role,
+        userId: newInsurenc.uid,
+      };
+
+      const docRef = await addDoc(
+        collection(firestore, "insurenceCo"),
+        newInsurence
+      );
       newInsurence.id = docRef.id;
+
       onAddInsurence(newInsurence);
+
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setRole("");
       navigate("/dashbord");
-    }
-    catch(error) {
-      console.log("Error adding Insurence Co",error);
+    } catch (error) {
+      console.log("Error adding Insurence Co", error);
     }
   };
 
@@ -129,7 +147,7 @@ const AddInsurence = ({onAddInsurence}) => {
               <FormLabel>Role</FormLabel>
               <RadioGroup
                 row
-                value={gender}
+                value={role}
                 onChange={(e) => setRole(e.target.value)}
               >
                 <FormControlLabel

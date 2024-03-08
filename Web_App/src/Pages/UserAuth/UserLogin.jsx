@@ -5,22 +5,29 @@ import SendIcon from "@mui/icons-material/Send";
 import Container from "@mui/material/Container";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid"; // Import Grid component
+import Grid from "@mui/material/Grid";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+ import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase"; // Import Firebase auth instance
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  console.log(auth)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // const { FName, LName, email, password } = e.target.value;
-    if (email && password) {
-      console.log(email, password);
-      navigate('/reqdash');
-      // Here you can perform any actions like submitting the form data
+    try {
+      // Sign in the user with email and password
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("Signed in as:", user.email);
+      navigate("/reqdash");
+    } catch (error) {
+      console.error("Error signing in:", error.message);
+      // Handle error (display error message to the user, etc.)
     }
   };
 

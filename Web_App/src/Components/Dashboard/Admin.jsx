@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddAdmin from "./AddAdmin";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { firestore } from "../../firebase"; // Adjust the import path as per your project structure
+// import { deleteUser } from 'firebase/auth';
 
 function Admin() {
   const [admins, setAdmins] = useState([]);
@@ -39,14 +40,19 @@ function Admin() {
 
   const handleDelete = async (adminId) => {
     try {
+      // Delete admin from authentication
+      // await deleteUser(auth.currentUser);
+
+      // Delete admin from Firestore
       await deleteDoc(doc(firestore, "admins", adminId));
+    
+      // Remove admin from state
       const updatedAdmins = admins.filter((admin) => admin.id !== adminId);
       setAdmins(updatedAdmins);
     } catch (error) {
       console.error("Error deleting admin:", error);
     }
   };
-
   const handleUpdate = (adminId) => {
     console.log("Updating admin with ID:", adminId);
     // Implement update logic here
@@ -95,7 +101,7 @@ function Admin() {
                       sx={{ padding: 4, color: "red" }}
                       edge="end"
                       aria-label="delete"
-                      onClick={() => handleDelete(admin.id)}
+                      onClick={() => handleDelete(admin.id, admin.email)}
                     >
                       <DeleteIcon />
                     </IconButton>

@@ -17,7 +17,8 @@ import SendIcon from "@mui/icons-material/Send";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { useNavigate } from "react-router-dom";
 import { collection, addDoc } from 'firebase/firestore';
-import { firestore } from '../../firebase';
+import { firestore, auth } from '../../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const AddAdmin = ({ onAddAdmin }) => {
   const [name, setName] = useState("");
@@ -35,19 +36,34 @@ const AddAdmin = ({ onAddAdmin }) => {
       return;
     }
 
-    // Create admin object
-    const newAdmin = {
-      name,
-      email,
-      password,
-      role,
-    };
-
     try {
+      // Create admin with email and password
+      const adminCredintials = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(adminCredintials.user)
+      const newAdmn = adminCredintials.user;
+      
+      // Check if the user has a UID
+      if (!newAdmn.uid) {
+        console.error("User UID not found.");
+        return;
+      }
+      
+      // Create admin object
+      const newAdmin = {
+        name,
+        email,
+        password,
+        role,
+        userId: newAdmn.uid, // Save the admin ID associated with this admin
+      };
+
       // Save admin data to Firestore
       const docRef = await addDoc(collection(firestore, 'admins'), newAdmin);
       newAdmin.id = docRef.id; // Add the document ID to the admin object
-      onAddAdmin(newAdmin); // Invoke the callback function with the new admin object
+
+      // Invoke the callback function with the new admin object
+      onAddAdmin(newAdmin); 
+
       // Clear the form fields after adding the admin
       setName("");
       setEmail("");
@@ -56,7 +72,8 @@ const AddAdmin = ({ onAddAdmin }) => {
       setRole("");
       navigate("/dashbord"); // Redirect to dashboard after adding admin
     } catch (error) {
-      console.error("Error adding admin: ", error);
+      console.error("Error adding admin:", error.message);
+      // Handle error adding admin (display error message to the admin, etc.)
     }
   };
 

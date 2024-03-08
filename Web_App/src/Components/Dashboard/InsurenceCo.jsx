@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddInsurence from './AddInsurence';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { firestore } from '../../firebase';
+// import { deleteUser } from 'firebase/auth';
 
 function InsurenceCo() {
   const [insurances, setInsurances] = useState([]);
@@ -25,6 +26,7 @@ function InsurenceCo() {
   const handleDelete = async (insuranceId) => {
     try {
       await deleteDoc(doc(firestore, 'insurenceCo', insuranceId));
+      // await deleteUser(auth, email);
       const updatedInsurances = insurances.filter(insurance => insurance.id !== insuranceId);
       setInsurances(updatedInsurances);
     } catch (error) {
