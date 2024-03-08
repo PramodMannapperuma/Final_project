@@ -17,7 +17,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { collection, addDoc } from "firebase/firestore";
-import { firestore } from "../../firebase";
+import { firestore, auth } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const AddGarage = ({ onAddGarage }) => {
   const [name, setName] = useState("");
@@ -33,17 +34,32 @@ const AddGarage = ({ onAddGarage }) => {
       alert("Passwords do not match!");
       return;
     }
-    const newGarage = {
-      name,
-      email,
-      password,
-      role,
-    };
 
     try {
+      const garageCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const newGarag = garageCredentials.user;
+
+      if (!newGarag.uid) {
+        console.error("uid not found");
+        return;
+      }
+      const newGarage = {
+        name,
+        email,
+        password,
+        role,
+        userId: newGarag.uid,
+      };
+
       const docRef = await addDoc(collection(firestore, "garages"), newGarage);
       newGarage.id = docRef.id;
+
       onAddGarage(newGarage);
+
       setName("");
       setEmail("");
       setPassword("");
@@ -57,8 +73,11 @@ const AddGarage = ({ onAddGarage }) => {
 
   const handleDeleteClick = () => {
     // Clear the form data
+    setName("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
+    setRole("");
   };
 
   return (

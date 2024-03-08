@@ -16,8 +16,8 @@ import SendIcon from "@mui/icons-material/Send";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import PropTypes from "prop-types";
 import { collection, addDoc } from "firebase/firestore";
-import { firestore } from "../../firebase"; // Adjust the import path as per your project structure
-
+import { auth, firestore } from "../../firebase"; // Adjust the import path as per your project structure
+import { createUserWithEmailAndPassword } from "firebase/auth";
 const AddUser = ({ onAddUser }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,19 +33,34 @@ const AddUser = ({ onAddUser }) => {
       return;
     }
 
-    // Create user object
-    const newUser = {
-      name,
-      email,
-      password,
-      role,
-    };
-
     try {
+      const userCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const newUsr = userCredentials.user;
+
+      if (!newUsr) {
+        console.error("User does not exist");
+        return;
+      }
+
+      // Create user object
+      const newUser = {
+        name,
+        email,
+        password,
+        role,
+        userId: newUsr.uid, // Save the user ID associated with this user
+      };
+
       // Save user data to Firestore
       const docRef = await addDoc(collection(firestore, "users"), newUser);
       newUser.id = docRef.id; // Add the document ID to the user object
+
       onAddUser(newUser); // Invoke the callback function with the new user object
+
       setName("");
       setEmail("");
       setPassword("");

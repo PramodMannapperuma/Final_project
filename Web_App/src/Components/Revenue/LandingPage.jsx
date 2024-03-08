@@ -1,15 +1,9 @@
 import { useState } from "react";
 import { Button, Input, Container, Typography, Box } from "@mui/material";
 import Nav from "../Navigation/Nav";
-// import firebase from "firebase/app";
-// import "firebase/storage";
-
-// const firebaseConfig = {
-//   // Your firebase config
-// };
-
-// firebase.initializeApp(firebaseConfig);
-// const storage = firebase.storage();
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { firestore } from "../../firebase";
 
 const Landing = () => {
   const [insuranceFiles, setInsuranceFiles] = useState([]);
@@ -29,29 +23,67 @@ const Landing = () => {
   };
 
   const handleUpload = async () => {
-    console.log("Uploading certificate files:", certificateFiles);
-    console.log("Uploading ecoTest files:", ecoTestFiles);
-    console.log("Uploading insurance files:", insuranceFiles);
-    // try {
-    //   await uploadFiles(insuranceFiles, 'insurance');
-    //   await uploadFiles(ecoTestFiles, 'ecoTest');
-    //   await uploadFiles(certificateFiles, 'certificate');
-    //   alert('Files uploaded successfully!');
-    // } catch (error) {
-    //   console.error('Error uploading files: ', error);
-    //   alert('Error uploading files');
-    // }
+    const storage = getStorage();
+    const id = generateId(); // Generate a new ID for each upload
+
+    // Upload insurance files to a new folder with the generated ID
+    const insuranceId = await uploadFiles(
+      insuranceFiles,
+      "documents",
+      id,
+      storage
+    );
+
+    // Upload ecoTest files to the same folder
+    const ecoTestId = await uploadFiles(ecoTestFiles, "documents", id, storage);
+
+    // Upload certificate files to the same folder
+    const certificateId = await uploadFiles(
+      certificateFiles,
+      "documents",
+      id,
+      storage
+    );
+
+    // Save the IDs to Firestore
+    await saveIdsToFirestore(insuranceId, ecoTestId, certificateId);
+
+    // Clear the file uploaders
+    setInsuranceFiles([]);
+    setEcoTestFiles([]);
+    setCertificateFiles([]);
   };
 
-  // const uploadFiles = async (files, folder) => {
-  //   const promises = [];
-  //   files.forEach((file) => {
-  //     const storageRef = storage.ref(`${folder}/${file.name}`);
-  //     const uploadTask = storageRef.put(file);
-  //     promises.push(uploadTask);
-  //   });
-  //   return Promise.all(promises);
-  // };
+  const uploadFiles = async (files, folderName, id) => {
+    const storage = getStorage();
+    const urls = [];
+
+    for (const file of files) {
+      const storageRef = ref(storage, `${folderName}/${id}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      urls.push(downloadURL);
+    }
+
+    return id;
+  };
+
+  const generateId = () => {
+    return Math.random().toString(36).substring(7);
+  };
+
+  const saveIdsToFirestore = async (insuranceId, ecoTestId, certificateId) => {
+    try {
+      await addDoc(collection(firestore, "fileIds"), {
+        insuranceId,
+        ecoTestId,
+        certificateId,
+      });
+      console.log("File IDs uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading file IDs:", error);
+    }
+  };
 
   return (
     <div>
@@ -162,7 +194,7 @@ const Landing = () => {
             ))}
           </Typography>
         )}
-        <Box sx={{ textAlign: "center", marginTop: "20px", marginLeft:6 }}>
+        <Box sx={{ textAlign: "center", marginTop: "20px", marginLeft: 6 }}>
           <Button variant="contained" onClick={handleUpload}>
             Upload
           </Button>
