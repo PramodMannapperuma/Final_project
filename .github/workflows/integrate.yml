@@ -18,9 +18,9 @@ jobs:
           node-version: 20
 
       - run: npm install
-        working-directory: web_App
+        working-directory: Web_App
       - run: npm test
-        working-directory: web_App
+        working-directory: Web_App
       
 
       
