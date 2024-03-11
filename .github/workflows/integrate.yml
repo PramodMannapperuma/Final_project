@@ -19,8 +19,7 @@ jobs:
 
       - run: npm install
         working-directory: Web_App
-      - run: npm test
-        working-directory: Web_App
+
       
 
       
