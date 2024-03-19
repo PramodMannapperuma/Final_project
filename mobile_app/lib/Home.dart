@@ -22,6 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         title: const Text(
           'Hello',
+
           style: TextStyle(
             fontSize: 20,
           ),
