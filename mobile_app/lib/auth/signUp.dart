@@ -70,7 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       validator: (value) {
                         if (_currentStep == 0 &&
                             (value == null || value.isEmpty)) {
-                          print('firstname failed');
+
                           return 'Please enter your first name';
                         }
                         return null;
@@ -85,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       validator: (value) {
                         if (_currentStep == 0 &&
                             (value == null || value.isEmpty)) {
-                          print('name failed');
+
                           return 'Please enter your last name';
                         }
                         return null;

@@ -100,13 +100,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     ClickableCard(
                       title: 'Card 1',
                       onTap: () {
-                        print('Card 1 clicked');
                       },
                     ),
                     ClickableCard(
                       title: 'Card 2',
                       onTap: () {
-                        print('Card 2 clicked');
                       },
                     ),
                   ],
@@ -116,13 +114,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     ClickableCard(
                       title: 'Card 3',
                       onTap: () {
-                        print('Card 3 clicked');
                       },
                     ),
                     ClickableCard(
                       title: 'Card 4',
                       onTap: () {
-                        print('Card 4 clicked');
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
