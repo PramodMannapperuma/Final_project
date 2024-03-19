@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'SideBar/SideBar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -16,19 +15,20 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         title: const Text(
-          'Hello',
-
+          'Home',
           style: TextStyle(
             fontSize: 20,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(

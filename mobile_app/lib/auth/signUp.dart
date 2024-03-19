@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/nav/bottomNav.dart';
 
-import '../Home.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -195,11 +194,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     child: Text(_currentStep == 2 ? 'Finish' : 'Next'),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   if (_currentStep > 0)
                     TextButton(
                       onPressed: controlsDetails.onStepCancel,
-                      child: Text('Back'),
+                      child: const Text('Back'),
                     ),
                 ],
               );

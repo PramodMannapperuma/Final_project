@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/Home.dart';
 import 'package:mobile_app/nav/bottomNav.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -39,7 +38,7 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "welcome Back"
+              "welcome Back",
               style: TextStyle(fontSize: 60),
             ),
             // Image.asset(
