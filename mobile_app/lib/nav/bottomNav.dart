@@ -31,7 +31,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
       drawer: const Sidebar(),
       appBar: AppBar(
-        title: const Text('Mkkhari'),
+        title: const Text('MotoManager'),
         backgroundColor: Colors.blue,
         actions: [
           Container(
@@ -87,7 +87,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
                   try {
                     Navigator.pushNamed(context, '/landing');
                   } catch (e) {
-                    print(e);
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -108,7 +107,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 }
                 if (value == 'faq') {
                   // Navigator.pushNamed(context, '/faq');
-                  print("FAQ");
                 }
               },
               child: const Icon(Icons.more_vert),
@@ -142,7 +140,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
     Widget widget;
     switch (index) {
       case 0:
-        widget =  PdfFilePicker();
+        widget =  const PdfFilePicker();
         break;
       case 1:
         widget = const MyHomePage();

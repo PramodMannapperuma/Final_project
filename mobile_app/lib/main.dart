@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/auth/login.dart';
-import 'package:mobile_app/auth/signUp.dart';
 import 'package:mobile_app/nav/bottomNav.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -14,7 +12,7 @@ Future main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      home: BottomNavbar(),
+      home: const BottomNavbar(),
     );
   }
 }

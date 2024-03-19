@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class PdfFilePicker extends StatefulWidget {
+  const PdfFilePicker({super.key});
+
   @override
   _PdfFilePickerState createState() => _PdfFilePickerState();
 }
@@ -50,7 +52,7 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF File Picker'),
+        title: const Text('PDF File Picker'),
       ),
       body: Center(
         child: Column(
@@ -58,23 +60,23 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
           children: <Widget>[
             ElevatedButton(
               onPressed: () => _openFilePicker('insurance'),
-              child: Text('Add Insurance'),
+              child: const Text('Add Insurance'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_insuranceFileName != null)
               Text('Insurance File: $_insuranceFileName'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => _openFilePicker('ecoTest'),
-              child: Text('Add Eco Test'),
+              child: const Text('Add Eco Test'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_ecoTestFileName != null)
               Text('Eco Test File: $_ecoTestFileName'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _uploadFiles,
-              child: Text('Upload'),
+              child: const Text('Upload'),
             ),
           ],
         ),
