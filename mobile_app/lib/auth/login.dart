@@ -39,8 +39,8 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "Shit",
-              style: TextStyle(fontSize: 80),
+              "welcome Back"
+              style: TextStyle(fontSize: 60),
             ),
             // Image.asset(
             //   'assets/Images/shit.jpg',

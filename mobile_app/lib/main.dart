@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/auth/login.dart';
 import 'package:mobile_app/auth/signUp.dart';
 import 'package:mobile_app/nav/bottomNav.dart';
-// import 'package:mobile_app/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -22,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
 
       ),
-      home: SignupScreen(),
+      home: BottomNavbar(),
     );
   }
 }
