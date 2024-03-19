@@ -238,11 +238,11 @@ class _SignupScreenState extends State<SignupScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // Perform form submission
-      // print('First Name: $_firstName');
-      // print('Last Name: $_lastName');
-      // print('Email: $_email');
-      // print('Password: $_password');
-      // print('Gender: $_gender');
+      print('First Name: $_firstName');
+      print('Last Name: $_lastName');
+      print('Email: $_email');
+      print('Password: $_password');
+      print('Gender: $_gender');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
