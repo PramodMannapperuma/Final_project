@@ -21,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () {},
         ),
         title: const Text(
-          'Home',
+          'Hello',
           style: TextStyle(
             fontSize: 20,
           ),
