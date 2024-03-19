@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'SideBar/SideBar.dart';
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -16,92 +15,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Sidebar(),
       appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: Colors.blue,
-        actions: [
-          Container(
-            padding: const EdgeInsets.only(right: 15.0),
-            child: PopupMenuButton<String>(
-              itemBuilder: (BuildContext context) {
-                return [
-                  const PopupMenuItem(
-                    value: 'faq',
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Faq',
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        SizedBox(width: 6),
-                        Icon(
-                          Icons.help,
-                          color: Colors.blue,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem(
-                    value: 'logout',
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Log Out',
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 6,
-                        ),
-                        Icon(
-                          Icons.logout,
-                          color: Colors.blue,
-                        ),
-                      ],
-                    ),
-                  ),
-                ];
-              },
-              onSelected: (String value) async {
-                // Handle menu item selection here
-                if (value == 'logout') {
-                  try {
-                    Navigator.pushNamed(context, '/landing');
-                  } catch (e) {
-                    print(e);
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("Error"),
-                            content: const Text("logout failed maybe network error"),
-                            actions: [
-                              TextButton(
-                                child: const Text("ok"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            ],
-                          );
-                        });
-                  }
-                }
-                if (value == 'faq') {
-                  // Navigator.pushNamed(context, '/faq');
-                  print("FAQ");
-                }
-              },
-              child: const Icon(Icons.more_vert),
-            ),
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left),
+          onPressed: () {},
+        ),
+        title: const Text(
+          'Home',
+          style: TextStyle(
+            fontSize: 20,
           ),
-        ],
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
@@ -211,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
     );
   }
 }
@@ -231,7 +156,7 @@ class ClickableCard extends StatelessWidget {
       child: Card(
         // color: Colors.blue,
         child: SizedBox(
-          height: 120,
+          height: 110,
           width: 170,
           child: Padding(
             padding: const EdgeInsets.all(16.0),

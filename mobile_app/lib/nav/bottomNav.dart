@@ -4,6 +4,8 @@ import 'package:mobile_app/Home.dart';
 import 'package:mobile_app/screens/profile.dart';
 import 'package:mobile_app/screens/revenue_liscense.dart';
 
+import '../SideBar/SideBar.dart';
+
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -26,7 +28,94 @@ class _BottomNavbarState extends State<BottomNavbar> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(),
+
+      drawer: const Sidebar(),
+      appBar: AppBar(
+        title: const Text('Mkkhari'),
+        backgroundColor: Colors.blue,
+        actions: [
+          Container(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: PopupMenuButton<String>(
+              itemBuilder: (BuildContext context) {
+                return [
+                  const PopupMenuItem(
+                    value: 'faq',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Faq',
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        SizedBox(width: 6),
+                        Icon(
+                          Icons.help,
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'logout',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Log Out',
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 6,
+                        ),
+                        Icon(
+                          Icons.logout,
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              onSelected: (String value) async {
+                // Handle menu item selection here
+                if (value == 'logout') {
+                  try {
+                    Navigator.pushNamed(context, '/landing');
+                  } catch (e) {
+                    print(e);
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Error"),
+                            content: const Text("logout failed maybe network error"),
+                            actions: [
+                              TextButton(
+                                child: const Text("ok"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  }
+                }
+                if (value == 'faq') {
+                  // Navigator.pushNamed(context, '/faq');
+                  print("FAQ");
+                }
+              },
+              child: const Icon(Icons.more_vert),
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: CurvedNavigationBar(
         items: items,
         index: index,
@@ -53,7 +142,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
     Widget widget;
     switch (index) {
       case 0:
-        widget = const RevenueRequest();
+        widget =  PdfFilePicker();
         break;
       case 1:
         widget = const MyHomePage();
