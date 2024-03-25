@@ -122,18 +122,6 @@ class _VehicleScreenState extends State<VehicleScreen> {
               icon: Icons.info,
               onPress: () {},
             ),
-            ProfileMenuWidget(
-              title: "Log Out",
-              icon: Icons.logout,
-              textColor: Colors.red,
-              endIcon: false,
-              onPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginForm()),
-                );
-              },
-            ),
           ],
         ),
       ),
@@ -157,7 +145,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
       child: Column(
         children: [
           const Text(
-            "Choose Profile Photo",
+            "Choose Vehicle Photo",
             style: TextStyle(fontSize: 20.0),
           ),
           const SizedBox(

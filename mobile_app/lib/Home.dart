@@ -69,14 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: Colors.indigo,
+                              color: Colors.black87,
                             ),
                           ),
                           Text(
-                            "Pramod Mannapperuma",
+                            "Pramod Mannapperuma ,",
                             style: TextStyle(
                               fontSize: 24,
-                              color: Colors.indigo,
+                              color: Colors.black,
                             ),
                           ),
                         ],

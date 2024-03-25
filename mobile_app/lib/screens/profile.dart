@@ -256,7 +256,7 @@ class ProfileMenuWidget extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .titleMedium
-              ?.copyWith(color: textColor, fontSize: 15.0)),
+              ?.copyWith(color: textColor, fontSize: 17.0)),
       trailing: endIcon
           ? Container(
               width: 30,
