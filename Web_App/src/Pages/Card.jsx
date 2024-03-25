@@ -9,9 +9,6 @@ export default function NCard() {
   return (
     <Card sx={{minWidth: 400}} >
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Word of the Day
-        </Typography>
         <Typography variant="h5" component="div">
           Reveneu License 
         </Typography>
