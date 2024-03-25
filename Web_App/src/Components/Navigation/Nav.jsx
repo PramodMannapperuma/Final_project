@@ -7,9 +7,9 @@ function Nav() {
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu">
+        {/* <IconButton edge="start" color="inherit" aria-label="menu">
           <MenuIcon />
-        </IconButton>
+        </IconButton> */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Hello
         </Typography>

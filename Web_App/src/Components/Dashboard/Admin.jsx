@@ -89,14 +89,14 @@ function Admin() {
                     }
                   />
                   <ListItemSecondaryAction>
-                    <IconButton
+                    {/* <IconButton
                       sx={{ padding: 4 }}
                       edge="end"
                       aria-label="edit"
                       onClick={() => handleUpdate(admin.id)}
                     >
                       <EditIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                       sx={{ padding: 4, color: "red" }}
                       edge="end"

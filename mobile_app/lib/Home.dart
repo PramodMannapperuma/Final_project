@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/screens/profile.dart';
+import 'package:mobile_app/screens/revenue_liscense.dart';
+import 'package:mobile_app/vehicle/vehicleScreen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -16,12 +19,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.chevron_left),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         title: const Text(
           'Home',
           style: TextStyle(
@@ -30,108 +33,162 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              width: double.infinity,
-              height: 150,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 2, 33, 49),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8.0),
-                  bottomRight: Radius.circular(8.0),
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                width: double.infinity,
+                height: 100,
+                decoration: const BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8.0),
+                    bottomRight: Radius.circular(8.0),
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0),
+                  ),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          // width: 20.0,
+                          ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello, ",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                          Text(
+                            "Pramod Mannapperuma",
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.indigo,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      maxRadius: 50.0,
-                      minRadius: 50.0,
-                      backgroundColor: Colors.cyan,
-                      backgroundImage: AssetImage("assets/Images/home.jpg"),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          " Hello John ",
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Image.asset(
+                  'assets/Images/shit.jpg',
+                  width: 400, // Set the width of the image
+                  height: 200, // Set the height of the image
+                ),
+              ),
+              Column(
+                children: [
+                  const Divider(),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PdfFilePicker(),
                         ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.receipt), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
                         Text(
-                          "GTR GT500",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
+                          "Revenue License",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        // Image.asset(
+                        //   "assets/Images/home.jpg",
+                        //   height: 50,
+                        //   width: 50,
+                        // )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VehicleScreen(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                            Icons.directions_car), // Add your desired icon here
+                        const SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        const Text(
+                          "Vehicle",
+                          style: TextStyle(fontSize: 20),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.person), // Add your desired icon here
+                        const SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        const Text(
+                          "User Profile",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                  ClickableCard(
+                    title: 'Card 3',
+                    onTap: () {
+                      // Handle card tap
+                    },
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'assets/Images/shit.jpg',
-                width: 400, // Set the width of the image
-                height: 200, // Set the height of the image
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ClickableCard(
-                      title: 'Card 1',
-                      onTap: () {
-                      },
-                    ),
-                    ClickableCard(
-                      title: 'Card 2',
-                      onTap: () {
-                      },
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    ClickableCard(
-                      title: 'Card 3',
-                      onTap: () {
-                      },
-                    ),
-                    ClickableCard(
-                      title: 'Card 4',
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyHomePage(),
-                          ), // Replace HomePage with your actual homepage widget
-                        );
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

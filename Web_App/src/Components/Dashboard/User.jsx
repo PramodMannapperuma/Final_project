@@ -96,14 +96,14 @@ function User() {
                     }
                   />
                   <ListItemSecondaryAction>
-                    <IconButton
+                    {/* <IconButton
                       sx={{ padding: 4 }}
                       edge="end"
                       aria-label="edit"
                       onClick={() => handleUpdate(user.id)}
                     >
                       <EditIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                       sx={{ padding: 4, color: "red" }}
                       edge="end"

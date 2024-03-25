@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/Images/shit.jpg
     - assets/Images/home.jpg
+    - assets/Images/well.jpg
 
 #     - images/a_dot_ham.jpeg
 
