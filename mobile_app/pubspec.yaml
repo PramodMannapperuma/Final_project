@@ -43,6 +43,7 @@ dependencies:
   firebase_core: ^2.24.2
   file_picker: ^6.1.1
   image_picker: ^1.0.7
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,13 @@ flutter:
     - assets/Images/shit.jpg
     - assets/Images/home.jpg
     - assets/Images/well.jpg
+    - assets/Images/acci2.jpg
+    - assets/Images/acci1.jpg
+    - assets/Images/acci.jpg
+    - assets/Images/well3.webp
+    - assets/Images/well2.jpg
+    - assets/Images/well1.jpg
+    - assets/Images/cv.jpg
 
 #     - images/a_dot_ham.jpeg
 

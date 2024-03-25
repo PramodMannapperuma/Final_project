@@ -114,7 +114,7 @@ class ProfileDetailRow extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
-                    .copyWith(color: Colors.black, fontSize: 15.0),
+                    .copyWith(color: Colors.black, fontSize: 16.0),
               ),
               const SizedBox(height: 10.0),
               Text(value, style: Theme.of(context).textTheme.bodySmall),
@@ -157,7 +157,7 @@ class ProfileDetailColumn extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Colors.black,
-                    fontSize: 15.0,
+                    fontSize: 16.0,
                   ),
             ),
             const SizedBox(height: 10.0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mobile_app/vehicle/accident_detail.dart';
 import 'package:mobile_app/vehicle/repair_details.dart';
 import 'package:mobile_app/vehicle/report_request.dart';
@@ -33,17 +34,26 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                   Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/Images/home.jpg"),
+                        image: AssetImage("assets/Images/cv.jpg"),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   // Circle avatar
-                  CircleAvatar(
-                    backgroundImage: AssetImage("assets/Images/well.jpg"),
-                    radius: 60,
+                  Positioned(
+                    bottom: 0, // Adjust the bottom position as needed
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage("assets/Images/well.jpg"),
+                      radius: 60,
+                    ),
                   ),
                 ],
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.1,
+              child: const Divider(
+                thickness: 1.0,
               ),
             ),
             const SizedBox(height: 10),
@@ -56,9 +66,21 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 ),
               ],
             ),
-            const Divider(
-              thickness: 1,
+
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.1,
+              child: const Column(
+                children: [
+                  Text(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
+                  style: TextStyle(fontSize: 16, ),),
+                  Divider(
+                    thickness: 1.0,
+                  ),
+                ],
+              ),
             ),
+
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -124,81 +146,136 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               ),
             ),
             SizedBox(height: 10),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RepairDetails(),),);
-              },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                      Icons.settings_outlined), // Add your desired icon here
-                  SizedBox(
-                    width: 40,
-                  ), // Add some spacing between the icon and text
-                  Text(
-                    "Repair Details",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
+          CarouselSlider(
+            items: [
+              Image.asset('assets/Images/well.jpg'),
+              Image.asset('assets/Images/well1.jpg'),
+              Image.asset('assets/Images/well2.jpg'),
+              Image.asset('assets/Images/well3.webp'),
+              // Add more images as needed
+            ],
+            options: CarouselOptions(
+              height: 600,
+              enlargeCenterPage: true,
+              autoPlay: true,
+              aspectRatio: 16 / 9,
+              autoPlayCurve: Curves.fastOutSlowIn,
+              enableInfiniteScroll: true,
+              autoPlayAnimationDuration: Duration(milliseconds: 800),
+              viewportFraction: 1.0,
             ),
-            const SizedBox(height: 10),
+          ),
             SizedBox(
+              height: 20,
               width: MediaQuery.of(context).size.width / 1.1,
               child: const Divider(
                 thickness: 1.0,
               ),
             ),
-            const SizedBox(height: 10),
 
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AccidentDetails(),),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RepairDetails()),
+                );
               },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                      Icons.car_crash_outlined), // Add your desired icon here
-                  SizedBox(
-                    width: 40,
-                  ), // Add some spacing between the icon and text
-                  Text(
-                    "Accident Details",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      child: Icon(
+                        Icons.settings_outlined,
+                        size: 30, // Adjust the icon size as needed
+                      ),
+                    ),
+                    Text(
+                      "Repair Details",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 10),
             SizedBox(
+              width: MediaQuery.of(context).size.width / 1.1,
+              child: Divider(
+                thickness: 1.0,
+              ),
+            ),
+
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AccidentDetails()),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      child: Icon(
+                        Icons.car_crash_outlined,
+                        size: 30, // Adjust the icon size as needed
+                      ),
+                    ),
+                    Text(
+                      "Accident Details",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.1,
+              child: Divider(
+                thickness: 1.0,
+              ),
+            ),
+
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RquestReport()),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      child: Icon(
+                        Icons.library_books_sharp,
+                        size: 30, // Adjust the icon size as needed
+                      ),
+                    ),
+                    Text(
+                      "Request a Report",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
               width: MediaQuery.of(context).size.width / 1.1,
               child: const Divider(
                 thickness: 1.0,
               ),
             ),
-            const SizedBox(height: 10),
 
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RquestReport(),),);
-              },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                      Icons.library_books_sharp), // Add your desired icon here
-                  SizedBox(
-                    width: 40,
-                  ), // Add some spacing between the icon and text
-                  Text(
-                    "Request a Report",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
-            ),
             // FacebookStoryImageDisplay() placeholder
             // Container(
             //   color: Colors.blue, // Temporary color for visibility
