@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/vehicle/repair_Info.dart';
 
 class RepairDetails extends StatefulWidget {
   const RepairDetails({super.key});
@@ -56,7 +57,9 @@ class _RepairDetailsState extends State<RepairDetails> {
               ),
 
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RepairInfo(),),);
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -96,7 +99,7 @@ class _RepairDetailsState extends State<RepairDetails> {
                       width: 40,
                     ), // Add some spacing between the icon and text
                     Text(
-                      "Tyre Change",
+                      "Oil Change",
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(width: 40,),
@@ -125,37 +128,7 @@ class _RepairDetailsState extends State<RepairDetails> {
                       width: 40,
                     ), // Add some spacing between the icon and text
                     Text(
-                      "Tyre Change",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(width: 40,),
-                    Icon(Icons.arrow_forward_ios_rounded),
-
-                  ],
-                ),
-              ),
-
-              SizedBox(
-                height: 30,
-                width: MediaQuery.of(context).size.width / 1.1,
-                child: const Divider(
-                  thickness: 1.0,
-                ),
-              ),
-
-              GestureDetector(
-                onTap: () {},
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Icon(
-                        Icons.settings_outlined), // Add your desired icon here
-                    SizedBox(
-                      width: 40,
-                    ), // Add some spacing between the icon and text
-                    Text(
-                      "Tyre Change",
+                      "Power Box",
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(width: 40,),
@@ -185,7 +158,37 @@ class _RepairDetailsState extends State<RepairDetails> {
                       width: 40,
                     ), // Add some spacing between the icon and text
                     Text(
-                      "Tyre Change",
+                      "Oil Change",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(width: 40,),
+                    Icon(Icons.arrow_forward_ios_rounded),
+
+                  ],
+                ),
+              ),
+
+              SizedBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width / 1.1,
+                child: const Divider(
+                  thickness: 1.0,
+                ),
+              ),
+
+              GestureDetector(
+                onTap: () {},
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Icon(
+                        Icons.settings_outlined), // Add your desired icon here
+                    SizedBox(
+                      width: 40,
+                    ), // Add some spacing between the icon and text
+                    Text(
+                      "Service",
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(width: 40,),
@@ -214,7 +217,7 @@ class _RepairDetailsState extends State<RepairDetails> {
                       width: 40,
                     ), // Add some spacing between the icon and text
                     Text(
-                      "Tyre Change",
+                      "Oil Change",
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(width: 40,),
