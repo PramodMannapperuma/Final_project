@@ -13,8 +13,9 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 
 const data = [
-  { id: 1, firstName: "John", lastName: "Doe", age: 30 },
-  { id: 2, firstName: "Jane", lastName: "Doe", age: 28 },
+  { id: 1, EcoTest: "Eco.pdf", Name: "Jon", Insurence: "Insurense.pdf", OldRevenueLicense: "rev.pdf" },
+  { id: 2, EcoTest: "Green.pdf", Name: "Alice", Insurence: "Coverage.pdf", OldRevenueLicense: "renewal.pdf" },
+  
   // Add more sample data as needed
 ];
 
@@ -55,8 +56,35 @@ const ReDetails = () => {
                 <TableCell>{rowData.id}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>First Name</TableCell>
-                <TableCell>{rowData.firstName}</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>{rowData.Name}</TableCell>
+               
+              </TableRow>
+              <TableRow>
+                <TableCell>Eco Test</TableCell>
+                <TableCell>{rowData.EcoTest}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<CheckIcon />}
+                    // onClick={handleCheckClick}
+                  >
+                    <Link
+                      style={{ textDecoration: "none", color: "inherit" }}
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent the default behavior of the link
+                        window.open("/hellooo", "_blank"); // Open the link in a new tab
+                      }}
+                    >
+                      Check
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Insurence</TableCell>
+                <TableCell>{rowData.Insurence}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
@@ -78,8 +106,8 @@ const ReDetails = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Last Name</TableCell>
-                <TableCell>{rowData.lastName}</TableCell>
+                <TableCell>Old Revenue License</TableCell>
+                <TableCell>{rowData.OldRevenueLicense}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
@@ -94,14 +122,11 @@ const ReDetails = () => {
                         window.open("/hellooo", "_blank"); // Open the link in a new tab
                       }}
                     >
+                    
                       Check
                     </Link>
                   </Button>
                 </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Age</TableCell>
-                <TableCell>{rowData.age}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

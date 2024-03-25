@@ -1,6 +1,7 @@
 import Nav from "../Components/Navigation/Nav";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
+import Footer from "../footer";
 // import Card from "./Card";
 import NCard from "./Card";
 import NewCard from "./NewCard";
@@ -40,18 +41,14 @@ const Home = () => {
           <Grid item xs={6}>
             <NCard />
           </Grid>
-          <Grid item xs={6}>
-            <NCard />
-          </Grid>
-          <Grid item xs={6}>
-            <NCard />
-          </Grid>
+          
           <Grid item xs={6}>
             <NewCard />
           </Grid>
         </Grid>
-        <NewCard />
+        
       </Stack>
+      <Footer />
     </div>
   );
 };

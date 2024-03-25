@@ -102,8 +102,8 @@ class _ProfileState extends State<Profile> {
               },
             ),
             ProfileMenuWidget(
-              title: "One Huththak",
-              icon: Icons.face,
+              title: "Revenue Licence",
+              icon: Icons.library_books_sharp,
               onPress: () {},
             ),
             const Divider(
