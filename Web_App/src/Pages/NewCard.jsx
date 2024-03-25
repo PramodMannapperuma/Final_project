@@ -23,7 +23,7 @@ export default function NewCard() {
           Word of the Day
         </Typography>
         <Typography variant="h5" component="div">
-          Shit
+          Close
         </Typography>
         {/* <Typography sx={{ mb: 1.5 }} color="text.secondary">
           adjective

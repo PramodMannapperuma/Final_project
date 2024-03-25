@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/auth/signUp.dart';
 import 'package:mobile_app/nav/bottomNav.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -118,6 +119,24 @@ class _LoginFormState extends State<LoginForm> {
                       'Login',
                       style: TextStyle(
                           fontSize: 16), // Set the font size of the button text
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignupScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Don't have an account? Sign up",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ],

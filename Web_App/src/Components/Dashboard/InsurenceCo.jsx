@@ -72,9 +72,9 @@ function InsurenceCo() {
                     }
                   />
                   <ListItemSecondaryAction>
-                    <IconButton sx={{padding:4}} edge="end" aria-label="edit" onClick={() => handleUpdate(insurance.id)}>
+                    {/* <IconButton sx={{padding:4}} edge="end" aria-label="edit" onClick={() => handleUpdate(insurance.id)}>
                       <EditIcon />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton sx={{padding:4, color:'red'}} edge="end" aria-label="delete" onClick={() => handleDelete(insurance.id)}>
                       <DeleteIcon />
                     </IconButton>

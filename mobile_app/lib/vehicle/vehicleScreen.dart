@@ -1,19 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app/screens/profile_edit.dart';
-import 'package:mobile_app/screens/profile_view.dart';
+import 'package:mobile_app/vehicle/EditVehicleDetails.dart';
+import 'package:mobile_app/vehicle/repair_details.dart';
+import 'package:mobile_app/vehicle/vehicleDetails.dart';
 
 import '../auth/login.dart';
+import '../screens/profile.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class VehicleScreen extends StatefulWidget {
+  const VehicleScreen({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<VehicleScreen> createState() => _VehicleScreenState();
 }
 
-class _ProfileState extends State<Profile> {
+class _VehicleScreenState extends State<VehicleScreen> {
   XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
@@ -21,7 +23,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Vehicle'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -34,7 +36,7 @@ class _ProfileState extends State<Profile> {
                   radius: 60.0,
                   backgroundImage: _imageFile != null
                       ? FileImage(File(_imageFile!.path))
-                      : const AssetImage("assets/Images/home.jpg")
+                      : const AssetImage("assets/Images/well.jpg")
                           as ImageProvider,
                 ),
                 Positioned(
@@ -66,7 +68,7 @@ class _ProfileState extends State<Profile> {
             ),
             const SizedBox(height: 10),
             Text(
-              "John Doe",
+              "Shelby GT500",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
@@ -81,12 +83,12 @@ class _ProfileState extends State<Profile> {
             ),
             ProfileMenuWidget(
               title: "Details",
-              icon: Icons.account_circle_outlined,
+              icon: Icons.car_crash,
               onPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ProfileDetails()),
+                      builder: (context) => const VehicleDetails()),
                 );
               },
             ),
@@ -96,15 +98,21 @@ class _ProfileState extends State<Profile> {
               onPress: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditProfilePage()),
+                  MaterialPageRoute(builder: (context) => const EditVehicle()),
                 );
               },
             ),
             ProfileMenuWidget(
-              title: "One Huththak",
-              icon: Icons.face,
-              onPress: () {},
+              title: "Repair Details",
+              icon: Icons.tire_repair_sharp,
+              onPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RepairDetails(),
+                  ),
+                );
+              },
             ),
             const Divider(
               thickness: 1,
@@ -217,60 +225,5 @@ class _ProfileState extends State<Profile> {
       });
       Navigator.pop(context); // Close the bottom sheet after selecting an image
     }
-  }
-}
-
-class ProfileMenuWidget extends StatelessWidget {
-  const ProfileMenuWidget({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.onPress,
-    this.endIcon = true,
-    this.textColor,
-  });
-
-  final String title;
-  final IconData icon;
-  final VoidCallback onPress;
-  final bool endIcon;
-  final Color? textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: onPress,
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: Colors.blueGrey.withOpacity(0.1),
-        ),
-        child: Icon(
-          icon,
-          color: Colors.black87,
-        ),
-      ),
-      title: Text(title,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(color: textColor, fontSize: 15.0)),
-      trailing: endIcon
-          ? Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Colors.black.withOpacity(0.1),
-              ),
-              child: const Icon(
-                Icons.keyboard_arrow_right,
-                color: Colors.blueGrey,
-              ),
-            )
-          : null,
-    );
   }
 }

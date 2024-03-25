@@ -26,7 +26,7 @@ class _ProfileState extends State<ProfileDetails> {
                   height: 115,
                   width: 115,
                   child: CircleAvatar(
-                    backgroundImage: AssetImage("assets/hh.jpg"),
+                    backgroundImage: AssetImage("assets/Images/home.jpg"),
                   ),
                 ),
               ],
@@ -156,9 +156,9 @@ class ProfileDetailColumn extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: Colors.black,
-                fontSize: 15.0,
-              ),
+                    color: Colors.black,
+                    fontSize: 15.0,
+                  ),
             ),
             const SizedBox(height: 10.0),
             Text(value, style: Theme.of(context).textTheme.bodySmall),

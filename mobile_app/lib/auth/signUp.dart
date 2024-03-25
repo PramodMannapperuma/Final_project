@@ -43,7 +43,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 if (_validateCurrentStep()) {
                   if (_currentStep < 2) {
                     _currentStep++;
-
                     // Reset autovalidation when moving to the next step
                   }
                 }
@@ -59,7 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
             },
             steps: [
               Step(
-                title: const Text('Personal Information'),
+                title: const Text('Personal Information', style: TextStyle(color: Colors.blue),),
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -70,7 +69,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       validator: (value) {
                         if (_currentStep == 0 &&
                             (value == null || value.isEmpty)) {
-
                           return 'Please enter your first name';
                         }
                         return null;
@@ -85,7 +83,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       validator: (value) {
                         if (_currentStep == 0 &&
                             (value == null || value.isEmpty)) {
-
                           return 'Please enter your last name';
                         }
                         return null;
@@ -98,7 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               Step(
-                title: const Text('Account Information'),
+                title: const Text('Account Information', style: TextStyle(color: Colors.blue),),
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -135,7 +132,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               Step(
-                title: const Text('Additional Information'),
+                title: const Text('Additional Information', style: TextStyle(color: Colors.blue),),
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -192,7 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         }
                       }
                     },
-                    child: Text(_currentStep == 2 ? 'Finish' : 'Next'),
+                    child: Text(_currentStep == 2 ? 'SignUp' : 'Next'),
                   ),
                   const SizedBox(width: 16),
                   if (_currentStep > 0)

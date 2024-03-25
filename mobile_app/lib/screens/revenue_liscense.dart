@@ -52,7 +52,7 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PDF File Picker'),
+        title: const Text('Revenue License '),
       ),
       body: Center(
         child: Column(
