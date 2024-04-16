@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile/vehicle/repair_details.dart';
 import 'package:mobile/vehicle/vehicleDetails.dart';
-
-import '../auth/login.dart';
 import '../screens/profile.dart';
 import 'EditVehicleDetails.dart';
 
