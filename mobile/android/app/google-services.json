@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "1029614245585",
+    "firebase_url": "https://revmaster-3e9df-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "revmaster-3e9df",
+    "storage_bucket": "revmaster-3e9df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029614245585:android:032cd831d318e6f9ff97f0",
+        "android_client_info": {
+          "package_name": "com.example.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF5m5lr7xRI-LnZ6By0RCJNp-GHkz-P6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029614245585:android:e4a8e5c531ad3f38ff97f0",
+        "android_client_info": {
+          "package_name": "com.example.moto_manager_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF5m5lr7xRI-LnZ6By0RCJNp-GHkz-P6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
