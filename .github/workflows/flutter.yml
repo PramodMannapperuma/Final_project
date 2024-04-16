@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        working-directory: mobile_app
+        working-directory: mobile
 
       # - name: Analyze project source
       #   run: flutter analyze
