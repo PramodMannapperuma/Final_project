@@ -3,10 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile/vehicle/repair_details.dart';
 import 'package:mobile/vehicle/vehicleDetails.dart';
-
-import '../auth/login.dart';
 import '../screens/profile.dart';
 import 'EditVehicleDetails.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<Map<String, dynamic>?> fetchUserData() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    return userDoc.data() as Map<String, dynamic>?;
+  }
+  return null;
+}
 
 class VehicleScreen extends StatefulWidget {
   const VehicleScreen({super.key});
@@ -71,10 +83,23 @@ class _VehicleScreenState extends State<VehicleScreen> {
               "Shelby GT500",
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text(
-              "JohnDoe69@gmail.com",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            FutureBuilder<Map<String, dynamic>?>(
+                future: fetchUserData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();  // Show loading indicator while waiting
+                  } else if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");  // Show error message
+                  } else if (snapshot.hasData) {
+                    String email = snapshot.data!['email'] ?? 'No email found';
+                    return Text(
+                      "$email",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    );
+                  } else {
+                    return Text("No user data available");
+                  }
+                }),
             const SizedBox(
               height: 20,
             ),

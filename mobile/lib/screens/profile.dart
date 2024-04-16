@@ -1,10 +1,24 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile/screens/profile_edit.dart';
 import 'package:mobile/screens/profile_view.dart';
 
 import '../auth/login.dart';
+
+Future<Map<String, dynamic>?> fetchUserData() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    return userDoc.data() as Map<String, dynamic>?;
+  }
+  return null;
+}
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -65,13 +79,34 @@ class _ProfileState extends State<Profile> {
               ],
             ),
             const SizedBox(height: 10),
-            Text(
-              "John Does",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text(
-              "JohnDoe69@gmail.com",
-              style: Theme.of(context).textTheme.bodyMedium,
+            FutureBuilder<Map<String, dynamic>?>(
+                future: fetchUserData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();  // Show loading indicator while waiting
+                  } else if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");  // Show error message
+                  } else if (snapshot.hasData) {
+                    // Assuming your user data includes 'firstName', 'lastName', and 'email' fields
+                    String firstName = snapshot.data!['firstName'] ?? 'First Name';
+                    String lastName = snapshot.data!['lastName'] ?? 'Last Name';
+                    String email = snapshot.data!['email'] ?? 'No email found';
+                    return Column(
+                      children: [
+                        Text(
+                          "$firstName $lastName", // Displaying the user's full name
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Text(
+                          email, // Displaying the email
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Text("No user data available");  // Handle case where no data is available
+                  }
+                }
             ),
             const SizedBox(
               height: 20,

@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:mobile/screens/profile.dart';
 import 'package:mobile/screens/revenue_liscense.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+Future<Map<String, dynamic>?> fetchUserData() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    return userDoc.data() as Map<String, dynamic>?;
+  }
+  return null;
+}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -52,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     topRight: Radius.circular(8.0),
                   ),
                 ),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(0.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -60,27 +71,49 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(
                           // width: 20.0,
                           ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Hello, ",
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          Text(
-                            "Pramod Mannapperuma ,",
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hello, ",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
+                      FutureBuilder<Map<String, dynamic>?>(
+                        future: fetchUserData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            if (snapshot.hasData && snapshot.data != null) {
+                              String firstName = snapshot.data!['firstName'] ?? 'User';
+                              String lastName = snapshot.data!['lastName'] ?? '';
+                              return Text(
+                                "$firstName $lastName",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                ),
+                              );
+                            } else {
+                              return Text(
+                                "User",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                ),
+                              );
+                            }
+                          } else {
+                            // While waiting for the data to load, you can display a loading spinner or similar widget
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                     ],
                   ),
                 ),
