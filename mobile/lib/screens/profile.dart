@@ -66,7 +66,7 @@ class _ProfileState extends State<Profile> {
             ),
             const SizedBox(height: 10),
             Text(
-              "John Doe",
+              "John Does",
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
