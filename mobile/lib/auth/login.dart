@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Home.dart';
 import 'package:mobile/auth/signUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // import '../nav/bottomNav.dart';
 
@@ -89,31 +91,18 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        // You can add your login logic here using _email and _password
-                        print('Email: $_email');
-                        print('Password: $_password');
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignupScreen(),
-                          ), // Replace HomePage with your actual homepage widget
-                        );
-                      }
-                    },
+                    onPressed: _login,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor:
-                          Colors.blue, // Set the text color of the button
+                      Colors.blue, // Set the text color of the button
                       minimumSize: const Size(double.infinity,
                           50), // Set the minimum size of the button (width, height)
                       padding: const EdgeInsets.symmetric(
                           vertical: 16), // Set the padding inside the button
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(10), // Set the border radius
+                        BorderRadius.circular(10), // Set the border radius
                       ),
                     ),
                     child: const Text(
@@ -147,5 +136,27 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
     );
+  }
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _email,
+          password: _password,
+        );
+        // Login successful, navigate to the next screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(), // Replace NextScreen() with your actual next screen widget
+          ),
+        );
+      } catch (e) {
+        // Handle login errors here
+        print('Error: $e');
+        // You can show an error message to the user if login fails
+      }
+    }
   }
 }
