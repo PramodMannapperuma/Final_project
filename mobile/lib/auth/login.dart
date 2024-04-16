@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Home.dart';
 import 'package:mobile/auth/signUp.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // import '../nav/bottomNav.dart';
@@ -149,7 +149,7 @@ class _LoginFormState extends State<LoginForm> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => SignupScreen(), // Replace NextScreen() with your actual next screen widget
+            builder: (context) => MyHomePage(), // Replace NextScreen() with your actual next screen widget
           ),
         );
       } catch (e) {

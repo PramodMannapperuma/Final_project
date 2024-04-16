@@ -39,6 +39,9 @@ dependencies:
   firebase_auth: ^4.16.0
   firebase_storage: ^11.6.0
   cloud_firestore: ^4.14.0
+  image_picker: ^1.0.8
+  file_picker: ^8.0.0+1
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +66,19 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/Images/shit.jpg
+    - assets/Images/home.jpg
+    - assets/Images/well.jpg
+    - assets/Images/acci2.jpg
+    - assets/Images/acci1.jpg
+    - assets/Images/acci.jpg
+    - assets/Images/well3.webp
+    - assets/Images/well2.jpg
+    - assets/Images/well1.jpg
+    - assets/Images/tyre.jpg
+    - assets/Images/tyre-change.jpg
+    - assets/Images/tyre1.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
