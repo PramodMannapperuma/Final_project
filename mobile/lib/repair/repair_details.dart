@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/vehicle/repair_Info.dart';
+import 'package:mobile/repair/repair_Info.dart';
 
 class RepairDetails extends StatefulWidget {
   const RepairDetails({super.key});

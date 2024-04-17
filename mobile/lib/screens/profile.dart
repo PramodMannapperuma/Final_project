@@ -129,11 +129,11 @@ class _ProfileState extends State<Profile> {
               title: "Settings",
               icon: Icons.settings,
               onPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditProfilePage()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => const EditProfilePage()),
+                // );
               },
             ),
             ProfileMenuWidget(

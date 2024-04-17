@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:mobile/vehicle/repair_details.dart';
+import 'package:mobile/repair/repair_details.dart';
 import 'package:mobile/vehicle/report_request.dart';
+import 'package:mobile/vehicle/vehicle_edit.dart';
 import '../screens/profile_view.dart';
-import 'accident_detail.dart';
+import '../accident/accident_detail.dart';
 
 class VehicleDetails extends StatefulWidget {
   const VehicleDetails({Key? key}) : super(key: key);
@@ -19,6 +20,21 @@ class _VehicleDetailsState extends State<VehicleDetails> {
       appBar: AppBar(
         title: const Text('Vehicle Profile'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              String vehicleId = 'your-vehicle-id-here'; // Replace this with actual vehicle ID
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VehicleEdit(vehicleId: vehicleId),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -85,8 +101,8 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ProfileDetailRow(
-                  title: 'Name',
+                ProfileDetailColumn(
+                  title: 'Vehicle Identification Number (VIN)',
                   value: 'Shelby',
                 ),
               ],
@@ -95,11 +111,11 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ProfileDetailRow(
-                  title: 'Registration Number',
+                  title: 'Make',
                   value: '1234567',
                 ),
                 ProfileDetailRow(
-                  title: 'Manufactured Year',
+                  title: 'Model',
                   value: '2023',
                 ),
               ],
@@ -108,7 +124,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ProfileDetailRow(
-                  title: 'Model',
+                  title: 'Year',
                   value: 'G Class A1',
                 ),
                 ProfileDetailRow(
@@ -123,7 +139,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 // Handle tapping on Miles
               },
               child: ProfileDetailColumn(
-                title: 'Miles',
+                title: 'Liscense Plate Number',
                 value: '10006',
               ),
             ),
@@ -132,7 +148,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 // Handle tapping on Services
               },
               child: ProfileDetailColumn(
-                title: 'Services',
+                title: 'Engine Type',
                 value: '20',
               ),
             ),
@@ -141,9 +157,17 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileDetails(),),);
               },
               child: ProfileDetailColumn(
-                title: 'Owners Details',
+                title: 'Fuel Type',
                 value: 'John Doe',
               ),
+            ),
+            ProfileDetailColumn(
+              title: 'Horse Power',
+              value: '10006',
+            ),
+            ProfileDetailColumn(
+              title: 'Transmission',
+              value: '10006',
             ),
             SizedBox(height: 10),
           CarouselSlider(

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/auth/signUp.dart';
 import 'package:mobile/firebase_options.dart';
+import 'package:mobile/vehicle/get_vehidata.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const SignupScreen(),
+      home: VehicleDetailsForm(),
     );
   }
 }
