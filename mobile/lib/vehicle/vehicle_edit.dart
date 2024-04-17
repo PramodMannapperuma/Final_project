@@ -80,108 +80,97 @@ class _VehicleEditState extends State<VehicleEdit> {
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          // Background cover photo
-                          Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/Images/cv.jpg"),
-                                fit: BoxFit.cover,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 200,
+                        width: double.infinity,
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            // Background cover photo
+                            Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/Images/cv.jpg"),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                          // Circle avatar
-                          Positioned(
-                            bottom: 0, // Adjust the bottom position as needed
-                            child: CircleAvatar(
-                              backgroundImage: AssetImage("assets/Images/well.jpg"),
-                              radius: 60,
+                            // Circle avatar
+                            Positioned(
+                              bottom: 0, // Adjust the bottom position as needed
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("assets/Images/well.jpg"),
+                                radius: 60,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.1,
-                      child: const Divider(
-                        thickness: 1.0,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Shelby GT500',
-                          style: Theme.of(context).textTheme.headline6,
+                          ],
                         ),
-                      ],
-                    ),
-
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.1,
-                      child: Column(
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        child: const Divider(
+                          thickness: 1.0,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          TextFormField(
-                            initialValue: _formData['description'],
-                            decoration: InputDecoration(labelText: 'Description',),
-                            onSaved: (value) => _formData['description'] = value ?? '',
-                            validator: (value) => value!.isEmpty ? 'This Field Cannot be Empty' : null,
+                          Text(
+                            'Shelby GT500',
+                            style: Theme.of(context).textTheme.headline6,
                           ),
-
                         ],
                       ),
-                    ),
 
-                    TextFormField(
-                      initialValue: _formData['name'],
-                      decoration: InputDecoration(labelText: 'Name'),
-                      onSaved: (value) => _formData['name'] = value ?? '',
-                      validator: (value) =>
-                          value!.isEmpty ? 'This field cannot be empty' : null,
-                    ),
-                    ProfileDetailColumnEdit(title: 'Shit', initialValue: 'shit'),
-                    TextFormField(
-                      initialValue: _formData['registrationNumber'],
-                      decoration:
-                          InputDecoration(labelText: 'Registration Number'),
-                      onSaved: (value) =>
-                          _formData['registrationNumber'] = value ?? '',
-                      validator: (value) =>
-                          value!.isEmpty ? 'This field cannot be empty' : null,
-                    ),
-                    TextFormField(
-                      initialValue: _formData['model'],
-                      decoration: InputDecoration(labelText: 'Model'),
-                      onSaved: (value) => _formData['model'] = value ?? '',
-                      validator: (value) =>
-                          value!.isEmpty ? 'This field cannot be empty' : null,
-                    ),
-                    TextFormField(
-                      initialValue: _formData['color'],
-                      decoration: InputDecoration(labelText: 'Color'),
-                      onSaved: (value) => _formData['color'] = value ?? '',
-                      validator: (value) =>
-                          value!.isEmpty ? 'This field cannot be empty' : null,
-                    ),
-                    TextFormField(
-                      initialValue: _formData['year'],
-                      decoration:
-                          InputDecoration(labelText: 'Manufactured Year'),
-                      onSaved: (value) => _formData['year'] = value ?? '',
-                      validator: (value) =>
-                          value!.isEmpty ? 'This field cannot be empty' : null,
-                    ),
-                  ],
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              initialValue: _formData['description'],
+                              decoration: InputDecoration(
+                                labelText: 'Description',
+                              ),
+                              onSaved: (value) =>
+                                  _formData['description'] = value ?? '',
+                              validator: (value) => value!.isEmpty
+                                  ? 'This Field Cannot be Empty'
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      ProfileDetailColumnEdit(
+                          title: 'Vehicle Identification Number (VIN)', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Make', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Model', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Year', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Color', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'License Plate Number', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Engine Type', initialValue: '' ,onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Fuel Type', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Horse Power', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                      ProfileDetailColumnEdit(
+                          title: 'Transmission', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -189,15 +178,18 @@ class _VehicleEditState extends State<VehicleEdit> {
   }
 }
 
-
 class ProfileDetailColumnEdit extends StatefulWidget {
   final String title;
   final String initialValue;
+  final Function(String? value) onSaved;
 
-  const ProfileDetailColumnEdit({Key? key, required this.title, required this.initialValue}) : super(key: key);
+  const ProfileDetailColumnEdit(
+      {Key? key, required this.title, required this.initialValue, required this.onSaved})
+      : super(key: key);
 
   @override
-  _ProfileDetailColumnEditState createState() => _ProfileDetailColumnEditState();
+  _ProfileDetailColumnEditState createState() =>
+      _ProfileDetailColumnEditState();
 }
 
 class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
@@ -236,27 +228,22 @@ class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
               TextFormField(
                 controller: _controller,
                 decoration: InputDecoration(
+                  hintText: 'Enter ${widget.title}',
                   border: UnderlineInputBorder(),
-                  hintText: 'Enter ${widget.title.toLowerCase()}',
                 ),
-                style: Theme.of(context).textTheme.bodySmall,
+                onSaved: (value) => widget.onSaved(value ?? ''),
+                validator: (value) => value!.isEmpty ? 'This field cannot be empty' : null,
               ),
               const SizedBox(height: 10.0),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 1.1,
-                child: const Divider(
-                  thickness: 1.0,
-                ),
-              )
+
             ],
           ),
         ),
         const Icon(
-          Icons.lock_outline,
-          size: 10.0,
+          Icons.edit,
+          size: 15.0,
         ),
       ],
     );
   }
 }
-
