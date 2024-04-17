@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mobile/vehicle/repair_details.dart';
 import 'package:mobile/vehicle/report_request.dart';
+import 'package:mobile/vehicle/vehicle_edit.dart';
 import '../screens/profile_view.dart';
 import 'accident_detail.dart';
 
@@ -19,6 +20,21 @@ class _VehicleDetailsState extends State<VehicleDetails> {
       appBar: AppBar(
         title: const Text('Vehicle Profile'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              String vehicleId = 'your-vehicle-id-here'; // Replace this with actual vehicle ID
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VehicleEdit(vehicleId: vehicleId),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -95,11 +111,11 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ProfileDetailRow(
-                  title: 'Registration Number',
+                  title: 'Registration N',
                   value: '1234567',
                 ),
                 ProfileDetailRow(
-                  title: 'Manufactured Year',
+                  title: 'Manufactured',
                   value: '2023',
                 ),
               ],
