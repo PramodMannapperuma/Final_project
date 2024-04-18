@@ -199,6 +199,9 @@ class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
+    _controller.addListener(() {
+      print("Current Value: ${_controller.text}");
+    });
   }
 
   @override
@@ -232,7 +235,12 @@ class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
                   border: UnderlineInputBorder(),
                 ),
                 onSaved: (value) => widget.onSaved(value ?? ''),
-                validator: (value) => value!.isEmpty ? 'This field cannot be empty' : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'This field cannot be empty';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 10.0),
 

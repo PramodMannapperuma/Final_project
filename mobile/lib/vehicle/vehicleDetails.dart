@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mobile/repair/repair_details.dart';
@@ -5,6 +7,7 @@ import 'package:mobile/vehicle/report_request.dart';
 import 'package:mobile/vehicle/vehicle_edit.dart';
 import '../screens/profile_view.dart';
 import '../accident/accident_detail.dart';
+import 'get_vehidata.dart';
 
 class VehicleDetails extends StatefulWidget {
   const VehicleDetails({Key? key}) : super(key: key);
@@ -14,8 +17,79 @@ class VehicleDetails extends StatefulWidget {
 }
 
 class _VehicleDetailsState extends State<VehicleDetails> {
+
+  Future<Map<String, dynamic>?> checkForVehicleData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.email != null) {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('vehicles')
+          .where('userEmail', isEqualTo: user.email)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first.data() as Map<String, dynamic>;  // Assuming this contains all necessary vehicle data
+      }
+    }
+    return null;  // No vehicle data or user not logged in
+  }
+  // Future<String?> fetchVehicleImageUrl() async {
+  //   User? user = FirebaseAuth.instance.currentUser;
+  //   if (user != null && user.email != null) {
+  //     var snapshot = await FirebaseFirestore.instance
+  //         .collection('vehicles')
+  //         .where('userEmail', isEqualTo: user.email)
+  //         .limit(1)
+  //         .get();
+  //
+  //     if (snapshot.docs.isNotEmpty) {
+  //       return snapshot.docs.first.data()['imageUrl'];  // Assuming 'imageUrl' is the field name
+  //     }
+  //   }
+  //   return null;
+  // }
+
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: checkForVehicleData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data != null) {
+            // Data exists, proceed to show vehicle details
+            return buildVehicleDetailsPage(context,snapshot.data!);
+          } else {
+            // No data exists, navigate to VehicleDetailsForm to add new vehicle
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => VehicleDetailsForm()),
+              );
+            });
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+        }
+        // Show loading indicator while checking data
+        return Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
+  }
+
+
+  Widget buildVehicleDetailsPage(BuildContext context, Map<String, dynamic> vehicleData) {
+    var imageUrl = vehicleData['imageUrls'];
+    String displayedImage;
+
+    if (imageUrl is List && imageUrl.isNotEmpty) {
+      displayedImage = imageUrl.first;  // Assuming the list contains string URLs and you want the first one
+    } else if (imageUrl is String) {
+      displayedImage = imageUrl;
+    } else {
+      displayedImage = 'assets/Images/well.jpg';  // Default image if no URL is provided
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vehicle Profile'),
@@ -59,7 +133,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                   Positioned(
                     bottom: 0, // Adjust the bottom position as needed
                     child: CircleAvatar(
-                      backgroundImage: AssetImage("assets/Images/well.jpg"),
+                      backgroundImage: NetworkImage(displayedImage),
                       radius: 60,
                     ),
                   ),
@@ -89,7 +163,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 children: [
                   Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                  style: TextStyle(fontSize: 16, ),),
+                    style: TextStyle(fontSize: 16, ),),
                   Divider(
                     thickness: 1.0,
                   ),
@@ -103,8 +177,8 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               children: [
                 ProfileDetailColumn(
                   title: 'Vehicle Identification Number (VIN)',
-                  value: 'Shelby',
-                ),
+                value: '${vehicleData['vin'] ?? 'N/A'}'),
+
               ],
             ),
             Row(
@@ -112,11 +186,11 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               children: [
                 ProfileDetailRow(
                   title: 'Make',
-                  value: '1234567',
+                  value: '${vehicleData['make'] ?? 'N/A'}',
                 ),
                 ProfileDetailRow(
                   title: 'Model',
-                  value: '2023',
+                  value: '${vehicleData['model'] ?? 'N/A'}',
                 ),
               ],
             ),
@@ -125,11 +199,11 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               children: [
                 ProfileDetailRow(
                   title: 'Year',
-                  value: 'G Class A1',
+                  value: '${vehicleData['year'] ?? 'N/A'}',
                 ),
                 ProfileDetailRow(
                   title: 'Color',
-                  value: 'Red',
+                  value: '${vehicleData['color'] ?? 'N/A'}',
                 ),
               ],
             ),
@@ -140,7 +214,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               },
               child: ProfileDetailColumn(
                 title: 'Liscense Plate Number',
-                value: '10006',
+                value: '${vehicleData['licensePlateNumber'] ?? 'N/A'}',
               ),
             ),
             GestureDetector(
@@ -149,7 +223,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               },
               child: ProfileDetailColumn(
                 title: 'Engine Type',
-                value: '20',
+                value: '${vehicleData['engineType'] ?? 'N/A'}',
               ),
             ),
             GestureDetector(
@@ -158,37 +232,37 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               },
               child: ProfileDetailColumn(
                 title: 'Fuel Type',
-                value: 'John Doe',
+                value: '${vehicleData['fuelType'] ?? 'N/A'}',
               ),
             ),
             ProfileDetailColumn(
               title: 'Horse Power',
-              value: '10006',
+              value: '${vehicleData['horsePower'] ?? 'N/A'}',
             ),
             ProfileDetailColumn(
               title: 'Transmission',
-              value: '10006',
+              value: '${vehicleData['transmission'] ?? 'N/A'}',
             ),
             SizedBox(height: 10),
-          CarouselSlider(
-            items: [
-              Image.asset('assets/Images/well.jpg'),
-              Image.asset('assets/Images/well1.jpg'),
-              Image.asset('assets/Images/well2.jpg'),
-              Image.asset('assets/Images/well3.webp'),
-              // Add more images as needed
-            ],
-            options: CarouselOptions(
-              height: 600,
-              enlargeCenterPage: true,
-              autoPlay: true,
-              aspectRatio: 16 / 9,
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enableInfiniteScroll: true,
-              autoPlayAnimationDuration: Duration(milliseconds: 800),
-              viewportFraction: 1.0,
+            CarouselSlider(
+              items: [
+                Image.asset('assets/Images/well.jpg'),
+                Image.asset('assets/Images/well1.jpg'),
+                Image.asset('assets/Images/well2.jpg'),
+                Image.asset('assets/Images/well3.webp'),
+                // Add more images as needed
+              ],
+              options: CarouselOptions(
+                height: 600,
+                enlargeCenterPage: true,
+                autoPlay: true,
+                aspectRatio: 16 / 9,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enableInfiniteScroll: true,
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                viewportFraction: 1.0,
+              ),
             ),
-          ),
             SizedBox(
               height: 20,
               width: MediaQuery.of(context).size.width / 1.1,
@@ -299,18 +373,10 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 thickness: 1.0,
               ),
             ),
-
-            // FacebookStoryImageDisplay() placeholder
-            // Container(
-            //   color: Colors.blue, // Temporary color for visibility
-            //   height: 600, // Adjust height as needed
-            //   child: Center(
-            //     child: FacebookStoryImageDisplay()
-            //     ),
-            //   ),
           ],
         ),
       ),
     );
   }
 }
+
