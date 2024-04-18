@@ -110,7 +110,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VehicleEdit(vehicleId: vehicleId),
+                  builder: (context) => VehicleEdit(),
                 ),
               );
             },
@@ -129,7 +129,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 children: [
                   // Background cover photo
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/Images/cv.jpg"),
                         fit: BoxFit.cover,
@@ -235,7 +235,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileDetails(),),);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileDetails(),),);
               },
               child: ProfileDetailColumn(
                 title: 'Fuel Type',
@@ -250,7 +250,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               title: 'Transmission',
               value: '${vehicleData['transmission'] ?? 'N/A'}',
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             CarouselSlider(
               items: imageSliders,
               options: CarouselOptions(
@@ -260,7 +260,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 aspectRatio: 16 / 9,
                 autoPlayCurve: Curves.fastOutSlowIn,
                 enableInfiniteScroll: true,
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 viewportFraction: 1.0,
               ),
             ),
@@ -276,16 +276,16 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RepairDetails()),
+                  MaterialPageRoute(builder: (context) => const RepairDetails()),
                 );
               },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      padding: EdgeInsets.only(left: 16, right: 8),
                       child: Icon(
                         Icons.settings_outlined,
                         size: 30, // Adjust the icon size as needed
@@ -301,7 +301,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width / 1.1,
-              child: Divider(
+              child: const Divider(
                 thickness: 1.0,
               ),
             ),
@@ -310,16 +310,16 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AccidentDetails()),
+                  MaterialPageRoute(builder: (context) => const AccidentDetails()),
                 );
               },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      padding: EdgeInsets.only(left: 16, right: 8),
                       child: Icon(
                         Icons.car_crash_outlined,
                         size: 30, // Adjust the icon size as needed
@@ -335,7 +335,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width / 1.1,
-              child: Divider(
+              child: const Divider(
                 thickness: 1.0,
               ),
             ),
@@ -344,16 +344,16 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RquestReport()),
+                  MaterialPageRoute(builder: (context) => const RquestReport()),
                 );
               },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      padding: EdgeInsets.only(left: 16, right: 8),
                       child: Icon(
                         Icons.library_books_sharp,
                         size: 30, // Adjust the icon size as needed

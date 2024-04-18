@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile/repair/repair_details.dart';
+import 'package:mobile/screens/profile_edit.dart';
 import 'package:mobile/vehicle/vehicleDetails.dart';
 import '../screens/profile.dart';
 import 'EditVehicleDetails.dart';
@@ -123,7 +124,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
               onPress: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const EditVehicle()),
+                  MaterialPageRoute(builder: (context) => EditVehicleDetails()),
                 );
               },
             ),
