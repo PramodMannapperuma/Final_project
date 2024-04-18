@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VehicleEdit extends StatefulWidget {
-  final String vehicleId; // Assuming each vehicle has a unique ID
-
-  const VehicleEdit({Key? key, required this.vehicleId}) : super(key: key);
+  const VehicleEdit({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<VehicleEdit> createState() => _VehicleEditState();
@@ -20,7 +21,7 @@ class _VehicleEditState extends State<VehicleEdit> {
     'color': '',
     'year': '',
   };
-
+  String? _documentId;
   @override
   void initState() {
     super.initState();
@@ -30,13 +31,19 @@ class _VehicleEditState extends State<VehicleEdit> {
   Future<void> _loadVehicleData() async {
     setState(() => _isLoading = true);
     try {
-      var document = await FirebaseFirestore.instance
-          .collection('vehicles')
-          .doc(widget.vehicleId)
-          .get();
-      if (document.exists) {
-        _formData = document.data()!;
-        setState(() {});
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.email != null) {
+        var querySnapshot = await FirebaseFirestore.instance
+            .collection('vehicles')
+            .where('userEmail', isEqualTo: user.email)
+            .limit(1)
+            .get();
+        if (querySnapshot.docs.isNotEmpty) {
+          var document = querySnapshot.docs.first;
+          _documentId = document.id;
+          _formData = document.data();
+          setState(() {});
+        }
       }
     } catch (e) {
       print("Error loading data: $e");
@@ -49,12 +56,17 @@ class _VehicleEditState extends State<VehicleEdit> {
       _formKey.currentState!.save();
       setState(() => _isLoading = true);
       try {
-        await FirebaseFirestore.instance
-            .collection('vehicles')
-            .doc(widget.vehicleId)
-            .update(_formData);
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Vehicle details updated successfully!')));
+        if (_documentId != null) {
+          await FirebaseFirestore.instance
+              .collection('vehicles')
+              .doc(_documentId)
+              .update(_formData);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Vehicle details updated successfully!')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('No vehicle data found to update')));
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to update vehicle details')));
@@ -129,7 +141,6 @@ class _VehicleEditState extends State<VehicleEdit> {
                           ),
                         ],
                       ),
-
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.1,
                         child: Column(
@@ -150,25 +161,75 @@ class _VehicleEditState extends State<VehicleEdit> {
                       ),
                       const SizedBox(height: 10.0),
                       ProfileDetailColumnEdit(
-                          title: 'Vehicle Identification Number (VIN)', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Vehicle Identification Number (VIN)',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['vin'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Make', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Make',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['make'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Model', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Model',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['model'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Year', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Year',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['year'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Color', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Color',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['color'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'License Plate Number', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'License Plate Number',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['licensePlateNumber'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Engine Type', initialValue: '' ,onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Engine Type',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['engineType'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Fuel Type', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Fuel Type',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['fuelType'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Horse Power', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Horse Power',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['horsePower'] = value ?? '');
+                        },
+                      ),
                       ProfileDetailColumnEdit(
-                          title: 'Transmission', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
+                        title: 'Transmission',
+                        initialValue: '',
+                        onSaved: (String? value) {
+                          setState(() => _formData['transmission'] = value ?? '');
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -184,7 +245,10 @@ class ProfileDetailColumnEdit extends StatefulWidget {
   final Function(String? value) onSaved;
 
   const ProfileDetailColumnEdit(
-      {Key? key, required this.title, required this.initialValue, required this.onSaved})
+      {Key? key,
+      required this.title,
+      required this.initialValue,
+      required this.onSaved})
       : super(key: key);
 
   @override
@@ -223,9 +287,9 @@ class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
               Text(
                 widget.title,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                ),
+                      color: Colors.black,
+                      fontSize: 16.0,
+                    ),
               ),
               const SizedBox(height: 10.0),
               TextFormField(
@@ -243,7 +307,6 @@ class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
                 },
               ),
               const SizedBox(height: 10.0),
-
             ],
           ),
         ),
