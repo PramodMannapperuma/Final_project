@@ -90,6 +90,13 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     } else {
       displayedImage = 'assets/Images/well.jpg';  // Default image if no URL is provided
     }
+    List<String> imageUrls = List<String>.from(vehicleData['imageUrls'] ?? []);
+    List<Widget> imageSliders = imageUrls.map((url) => Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: Image.network(url, fit: BoxFit.cover, width: 1000.0),
+      ),
+    )).toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vehicle Profile'),
@@ -245,13 +252,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             ),
             SizedBox(height: 10),
             CarouselSlider(
-              items: [
-                Image.asset('assets/Images/well.jpg'),
-                Image.asset('assets/Images/well1.jpg'),
-                Image.asset('assets/Images/well2.jpg'),
-                Image.asset('assets/Images/well3.webp'),
-                // Add more images as needed
-              ],
+              items: imageSliders,
               options: CarouselOptions(
                 height: 600,
                 enlargeCenterPage: true,
