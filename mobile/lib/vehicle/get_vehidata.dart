@@ -1,212 +1,371 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mobile/vehicle/vehicleDetails.dart';
+import 'dart:io';
+
 
 class VehicleDetailsForm extends StatefulWidget {
+  const VehicleDetailsForm({super.key});
+
   @override
-  _VehicleDetailsFormState createState() => _VehicleDetailsFormState();
+  State<VehicleDetailsForm> createState() => _VehicleDetailsFormState();
 }
 
 class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
-  final PageController _pageController = PageController();
-  final GlobalKey<FormState> _basicDetailsKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _technicalDetailsKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _ownershipKey = GlobalKey<FormState>();
+  int _activeStepIndex = 0;
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _vehicleImages = [];
 
-  bool _isLoading = false;
-  Map<String, dynamic> _formData = {};
+  VehicleData vehicleData = VehicleData();
+  List<Step> stepList() => [
+        Step(
+          state: _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
+          isActive: _activeStepIndex >= 0,
+          title: Text('Vehicle'),
+          content: Column(
+            children: [
+              TextFormField(
+                initialValue: vehicleData.vin,
+                decoration: InputDecoration(
+                    labelText: 'Vehicle Indentification Number (VIN)'),
+                onChanged: (value) => setState(() => vehicleData.vin = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the VIN';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.make,
+                decoration: InputDecoration(
+                  labelText: 'Make',
+                ),
+                onChanged: (value) => setState(() => vehicleData.make = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Make';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.model,
+                decoration: InputDecoration(
+                  labelText: 'Model',
+                ),
+                onChanged: (value) => setState(() => vehicleData.model = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Model';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.model,
+                decoration: InputDecoration(
+                  labelText: 'Year',
+                ),
+                onChanged: (value) => setState(() => vehicleData.year = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Year';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.color,
+                decoration: InputDecoration(
+                  labelText: 'Color',
+                ),
+                onChanged: (value) => setState(() => vehicleData.color = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Color';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+            ],
+          ),
+        ),
+        Step(
+          state: _activeStepIndex <= 1 ? StepState.editing : StepState.complete,
+          isActive: _activeStepIndex >= 1,
+          title: Text('Advance'),
+          content: Column(
+            children: [
+              TextFormField(
+                initialValue: vehicleData.licensePlateNumber,
+                decoration: InputDecoration(labelText: 'License Plate Number'),
+                onChanged: (value) =>
+                    setState(() => vehicleData.licensePlateNumber = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the License Plate Number';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.engineType,
+                decoration: InputDecoration(
+                  labelText: 'Engine Type',
+                ),
+                onChanged: (value) =>
+                    setState(() => vehicleData.engineType = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Engine Type';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.fuelType,
+                decoration: InputDecoration(
+                  labelText: 'Fuel Type',
+                ),
+                onChanged: (value) =>
+                    setState(() => vehicleData.fuelType = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Fuel Type';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.horsePower,
+                decoration: InputDecoration(
+                  labelText: 'Horse Power',
+                ),
+                onChanged: (value) =>
+                    setState(() => vehicleData.horsePower = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Horse Power';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+              TextFormField(
+                initialValue: vehicleData.transmission,
+                decoration: InputDecoration(
+                  labelText: 'Transmission',
+                ),
+                onChanged: (value) =>
+                    setState(() => vehicleData.transmission = value),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the Transmission';
+                  }
+                  return null; // indicates the input is correct
+                },
+              ),
+            ],
+          ),
+        ),
+        Step(
+          state: _activeStepIndex <= 2 ? StepState.editing : StepState.complete,
+          isActive: _activeStepIndex >= 2,
+          title: Text('Photos'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildImageListView(),
+                ElevatedButton(
+                  onPressed: _pickImages,
+                  child: Text('Add Vehicle Images'),
+                ),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ),
+      ];
+
+  Future<void> _pickImages() async {
+    final List<XFile>? selectedImages = await _picker.pickMultiImage();
+    if (selectedImages != null && selectedImages.isNotEmpty) {
+      setState(() {
+        _vehicleImages.addAll(selectedImages);
+      });
+    }
+  }
+
+  Widget _buildImageListView() {
+    return SizedBox(
+      height: 300, // Set the height of the horizontal list
+      width: 400,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _vehicleImages.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.file(File(_vehicleImages[index].path)),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<List<String>> uploadImagesAndGetUrls() async {
+    List<String> imageUrls = [];
+    for (var image in _vehicleImages) {
+      String fileName =
+          'vehicles/${DateTime.now().millisecondsSinceEpoch}_${image.name}';
+      File file = File(image.path);
+
+      try {
+        TaskSnapshot snapshot =
+            await FirebaseStorage.instance.ref(fileName).putFile(file);
+        String imageUrl = await snapshot.ref.getDownloadURL();
+        imageUrls.add(imageUrl);
+        print("Image uploaded: $imageUrl");
+      } catch (e) {
+        print("Error uploading image: $e");
+      }
+    }
+    return imageUrls;
+  }
+
+  Future<void> uploadVehicleDataWithImages() async {
+    showLoadingDialog(context); // Show loading dialog
+    CollectionReference vehicles =
+        FirebaseFirestore.instance.collection('vehicles');
+    List<String> imageUrls =
+        await uploadImagesAndGetUrls(); // Get image URLs from storage
+
+    User? user = FirebaseAuth.instance.currentUser; // Get the current logged-in user
+    String? userEmail = user?.email; // Get the user's email
+
+    if (userEmail == null) {
+      Navigator.of(context).pop(); // Dismiss the loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No logged-in user found')),
+      );
+      return;
+    }
+
+    try {
+      await vehicles.add({
+        'userEmail' : userEmail,
+        'vin': vehicleData.vin,
+        'make': vehicleData.make,
+        'model': vehicleData.model,
+        'year': vehicleData.year,
+        'color': vehicleData.color,
+        'licensePlateNumber': vehicleData.licensePlateNumber,
+        'engineType': vehicleData.engineType,
+        'fuelType': vehicleData.fuelType,
+        'horsePower': vehicleData.horsePower,
+        'transmission': vehicleData.transmission,
+        'imageUrls': imageUrls, // Store image URLs in Firestore
+      });
+      Navigator.of(context).pop(); // Dismiss the loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Vehicle details saved successfully!'),
+        ),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VehicleDetails(),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context).pop(); // Dismiss the loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update vehicle details : $e'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Multi-Page Vehicle Form"),
+        title: Text('Vehicle Details'),
+        centerTitle: true,
       ),
-      body: PageView(
-        controller: _pageController,
-        children: <Widget>[
-          BasicDetailsForm(formKey: _basicDetailsKey, formData: _formData),
-          TechnicalDetailsForm(
-              formKey: _technicalDetailsKey, formData: _formData),
-          OwnershipForm(formKey: _ownershipKey, formData: _formData),
-          buildSubmitPage(),
-        ],
+      body: Stepper(
+        currentStep: _activeStepIndex,
+        type: StepperType.horizontal,
+        steps: stepList(),
+        onStepContinue: () {
+          if (_activeStepIndex < (stepList().length - 1)) {
+            setState(() => _activeStepIndex += 1);
+          } else {
+            // Last step
+            uploadImagesAndGetUrls();
+            uploadVehicleDataWithImages();
+          }
+        },
+        onStepCancel: () {
+          if (_activeStepIndex == 0) {
+            return;
+          }
+          _activeStepIndex -= 1;
+          setState(() {});
+        },
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                if (_pageController.page != 0) {
-                  _pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.arrow_forward),
-              onPressed: () {
-                if (_pageController.page != 3) {  // Adjust based on the number of pages
-                  _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                } else {
-                  _submitForm();  // Call submit on the last page
-                }
-              },
-            ),
+    );
+  }
+}
+
+void showLoadingDialog(BuildContext context) {
+  showDialog(
+    barrierDismissible:
+        false, // Prevents the dialog from closing until we manually do it
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 24),
+            Text("Uploading data..."),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildSubmitPage() {
-    return Center(
-      child: ElevatedButton(
-        onPressed: _submitForm,
-        child: Text('Submit All Details'),
-      ),
-    );
-  }
-
-  void _submitForm() async {
-    // Validate all form states
-    if (_basicDetailsKey.currentState?.validate() ?? false) {
-      _basicDetailsKey.currentState?.save();
-    }
-    if (_technicalDetailsKey.currentState?.validate() ?? false) {
-      _technicalDetailsKey.currentState?.save();
-    }
-    if (_ownershipKey.currentState?.validate() ?? false) {
-      _ownershipKey.currentState?.save();
-    }
-
-    // Show a loading indicator
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Send data to Firestore
-    try {
-      // Assuming you have a collection named 'vehicles'
-      // You might want to generate a new document ID or use an existing one
-      var docRef = FirebaseFirestore.instance
-          .collection('vehicles')
-          .doc(); // Creates a new doc
-      await docRef.set(_formData);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Vehicle details saved successfully!')));
-    } catch (e) {
-      print('Error updating data: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save vehicle details: $e')));
-    }
-
-    // Hide loading indicator
-    setState(() {
-      _isLoading = false;
-    });
-  }
+      );
+    },
+  );
 }
 
-class BasicDetailsForm extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final Map<String, dynamic> formData;
+class VehicleData {
+  String vin;
+  String make;
+  String model;
+  String year;
+  String color;
+  String licensePlateNumber;
+  String engineType;
+  String fuelType;
+  String horsePower;
+  String transmission;
 
-  BasicDetailsForm({Key? key, required this.formKey, required this.formData})
-      : super(key: key);
+  // Add more fields as necessary
 
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            initialValue: formData['name'],
-            decoration: InputDecoration(labelText: 'Vehicle Name'),
-            onSaved: (value) => formData['name'] = value,
-            validator: (value) =>
-                value!.isEmpty ? 'This field cannot be empty' : null,
-          ),
-          TextFormField(
-            initialValue: formData['model'],
-            decoration: InputDecoration(labelText: 'Model'),
-            onSaved: (value) => formData['model'] = value,
-          ),
-          // Add more fields as necessary
-        ],
-      ),
-    );
-  }
-}
-
-class TechnicalDetailsForm extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final Map<String, dynamic> formData;
-
-  TechnicalDetailsForm(
-      {Key? key, required this.formKey, required this.formData})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            initialValue: formData['engineType'],
-            decoration: InputDecoration(labelText: 'Engine Type'),
-            onSaved: (value) => formData['engineType'] = value,
-            validator: (value) =>
-                value!.isEmpty ? 'This field cannot be empty' : null,
-          ),
-          TextFormField(
-            initialValue: formData['fuelType'],
-            decoration: InputDecoration(labelText: 'Fuel Type'),
-            onSaved: (value) => formData['fuelType'] = value,
-          ),
-          // Add more technical fields as necessary
-        ],
-      ),
-    );
-  }
-}
-
-class OwnershipForm extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final Map<String, dynamic> formData;
-
-  OwnershipForm({Key? key, required this.formKey, required this.formData})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            initialValue: formData['ownerName'],
-            decoration: InputDecoration(labelText: 'Owner Name'),
-            onSaved: (value) => formData['ownerName'] = value,
-            validator: (value) =>
-                value!.isEmpty ? 'This field cannot be empty' : null,
-          ),
-          TextFormField(
-            initialValue: formData['contactInfo'],
-            decoration: InputDecoration(labelText: 'Contact Info'),
-            onSaved: (value) => formData['contactInfo'] = value,
-          ),
-          // Add more ownership fields as necessary
-        ],
-      ),
-    );
-  }
+  VehicleData({
+    this.vin = '',
+    this.make = '',
+    this.model = '',
+    this.year = '',
+    this.color = '',
+    this.licensePlateNumber = '',
+    this.engineType = '',
+    this.fuelType = '',
+    this.horsePower = '',
+    this.transmission = '',
+  });
 }
