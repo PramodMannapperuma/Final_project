@@ -12,45 +12,45 @@ Future<String> fetchUserRole() async {
     return 'none';
   }
 
-  // Attempt to find the user in the 'users' collection
-  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+  // Attempt to find the user in the 'users' collection using a field query
+  QuerySnapshot userQuery = await FirebaseFirestore.instance
       .collection('users')
-      .doc(user.uid)
+      .where('userId', isEqualTo: user.uid)
       .get();
 
-  if (userDoc.exists) {
+  if (userQuery.docs.isNotEmpty) {
     print("Found user in 'users' collection.");
     return 'user';  // Role is 'user'
   }
 
   // If not found in 'users', check in the 'garages' collection
-  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  QuerySnapshot garageQuery = await FirebaseFirestore.instance
       .collection('garages')
-      .where('userEmail', isEqualTo: user.email)  // Using email as the identifier
+      .where('userId', isEqualTo: user.uid)
       .get();
 
-  if (querySnapshot.docs.isNotEmpty) {
-    // Access the first document, assuming only one will match the query
-    DocumentSnapshot garageDoc = querySnapshot.docs.first;
-    print("Found user in 'garages' collection with email: ${user.email}");
+  if (garageQuery.docs.isNotEmpty) {
+    print("Found user in 'garages' collection.");
     return 'garage';  // Role is 'garage'
   }
 
   // If not found in 'garages', check in the 'insurance' collection
-  DocumentSnapshot insuranceDoc = await FirebaseFirestore.instance
+  QuerySnapshot insuranceQuery = await FirebaseFirestore.instance
       .collection('insurenceCo')
-      .doc(user.uid)  // Assuming uid is the identifier for insurance collection
+      .where('userId', isEqualTo: user.uid)
       .get();
 
-  if (insuranceDoc.exists) {
+  if (insuranceQuery.docs.isNotEmpty) {
     print("Found user in 'insurenceCo' collection.");
     return 'insurance';  // Role is 'insurance'
   }
 
   // If the user is not found in any collection
   print("User role not found in any collection.");
+  print("user Id ${user.uid}");
   return 'none';  // Default role if none of the above
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -316,10 +316,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget GarageHomePage() {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Default Home Page"),
+        title: Text("Garage Home Page"),
+        centerTitle: true,
       ),
       body: Center(
-        child: Text("No specific role found, displaying default home page."),
+        child: Text("Garage found, displaying Garage home page."),
       ),
     );
   }
@@ -327,10 +328,185 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget InsuranceHomePage() {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Default Home Page"),
+        centerTitle: true,
+        title: const Text("Insurance Co Home Page"),
       ),
-      body: Center(
-        child: Text("No specific role found, displaying default home page."),
+      body:  SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                width: double.infinity,
+                height: 100,
+                decoration: const BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8.0),
+                    bottomRight: Radius.circular(8.0),
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        // width: 20.0,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello, ",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          FutureBuilder<Map<String, dynamic>?>(
+                            future: fetchUserData(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasData && snapshot.data != null) {
+                                  String firstName =
+                                      snapshot.data!['firstName'] ?? 'User';
+                                  String lastName =
+                                      snapshot.data!['lastName'] ?? '';
+                                  return Text(
+                                    "$firstName ",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "User",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // While waiting for the data to load, you can display a loading spinner or similar widget
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Image.asset(
+                  'assets/Images/shit.jpg',
+                  width: 400, // Set the width of the image
+                  height: 200, // Set the height of the image
+                ),
+              ),
+              Column(
+                children: [
+                  const Divider(),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PdfFilePicker(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.receipt), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        Text(
+                          "Revenue License",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        // Image.asset(
+                        //   "assets/Images/home.jpg",
+                        //   height: 50,
+                        //   width: 50,
+                        // )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VehicleScreen(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                            Icons.directions_car), // Add your desired icon here
+                        const SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        const Text(
+                          "Vehicle",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.person), // Add your desired icon here
+                        const SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        const Text(
+                          "User Profile",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
