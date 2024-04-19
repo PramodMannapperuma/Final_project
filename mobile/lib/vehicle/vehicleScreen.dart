@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mobile/repair/repair_details.dart';
-import 'package:mobile/screens/profile_edit.dart';
 import 'package:mobile/vehicle/vehicleDetails.dart';
 import '../screens/profile.dart';
 import 'EditVehicleDetails.dart';
@@ -13,11 +10,13 @@ class VehicleScreen extends StatefulWidget {
   const VehicleScreen({super.key});
 
   @override
-  State<VehicleScreen> createState() => _VehicleScreenState();
+  _VehicleScreenState createState() => _VehicleScreenState();
 }
 
 class _VehicleScreenState extends State<VehicleScreen> {
   String? _displayedImage;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -25,30 +24,34 @@ class _VehicleScreenState extends State<VehicleScreen> {
     fetchImageFromFirebase();
   }
 
-  Future<Map<String, dynamic>?> fetchImageFromFirebase() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null && user.email != null) {
-      var snapshot = await FirebaseFirestore.instance
-          .collection('vehicles')
-          .where('userEmail', isEqualTo: user.email)
+  Future<void> fetchImageFromFirebase() async {
+    User? user = _auth.currentUser;
+    if (user?.email != null) {
+      var snapshot = await _firestore.collection('vehicles')
+          .where('userEmail', isEqualTo: user!.email)
           .limit(1)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        Map<String, dynamic> vehicleData = snapshot.docs.first.data();
+        var vehicleData = snapshot.docs.first.data();
         var imageUrl = vehicleData['imageUrls'];
-        if (imageUrl is List && imageUrl.isNotEmpty) {
-          setState(() {
-            _displayedImage = imageUrl.first; // Using the first URL from the list
-          });
-        } else if (imageUrl is String) {
-          setState(() {
-            _displayedImage = imageUrl;
-          });
-        }
+        updateDisplayedImage(imageUrl);
       }
     }
-    return null;
+  }
+
+  void updateDisplayedImage(dynamic imageUrl) {
+    if (imageUrl is List && imageUrl.isNotEmpty) {
+      _setDisplayedImage(imageUrl.first);
+    } else if (imageUrl is String) {
+      _setDisplayedImage(imageUrl);
+    }
+  }
+
+  void _setDisplayedImage(String imageUrl) {
+    setState(() {
+      _displayedImage = imageUrl;
+    });
   }
 
   @override
@@ -58,93 +61,70 @@ class _VehicleScreenState extends State<VehicleScreen> {
         title: const Text('Vehicle'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            _displayedImage != null
-                ? CircleAvatar(
-              backgroundImage: NetworkImage(_displayedImage!),
-              radius: 60,
-              // Add onTap to change image
-              // onTap: () => bottomSheet(),
-            )
-                : const CircularProgressIndicator(), // Show loading indicator while image is being fetched
-            const SizedBox(height: 10),
-            Text(
-              "Shelby GT500",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            FutureBuilder<Map<String, dynamic>?>(
-                future: fetchUserData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // Show loading indicator while waiting
-                  } else if (snapshot.hasError) {
-                    return Text(
-                        "Error: ${snapshot.error}"); // Show error message
-                  } else if (snapshot.hasData) {
-                    String email = snapshot.data!['email'] ?? 'No email found';
-                    return Text(
-                      "$email",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    );
-                  } else {
-                    return Text("No user data available");
-                  }
-                }),
-            const SizedBox(
-              height: 20,
-            ),
-            const Divider(
-              thickness: 1,
-            ),
-            ProfileMenuWidget(
-              title: "Details",
-              icon: Icons.car_crash,
-              onPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const VehicleDetails()),
-                );
-              },
-            ),
-            ProfileMenuWidget(
-              title: "Settings",
-              icon: Icons.settings,
-              onPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EditVehicleDetails()),
-                );
-              },
-            ),
-            ProfileMenuWidget(
-              title: "Repair Details",
-              icon: Icons.tire_repair_sharp,
-              onPress: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RepairDetails(),
-                  ),
-                );
-              },
-            ),
-            const Divider(
-              thickness: 1,
-            ),
-            ProfileMenuWidget(
-              title: "Info",
-              icon: Icons.info,
-              onPress: () {},
-            ),
-          ],
-        ),
+      body: buildBody(),
+    );
+  }
+
+  Widget buildBody() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        children: <Widget>[
+          _buildImageWidget(),
+          const SizedBox(height: 10),
+          const Text("Shelby GT500", style: TextStyle(fontSize: 24)),
+          const SizedBox(height: 20),
+          const Divider(thickness: 1),
+          ..._buildProfileMenuWidgets(),
+          const Divider(thickness: 1),
+          ProfileMenuWidget(
+            title: "Info",
+            icon: Icons.info,
+            onPress: () {},
+          ),
+        ],
       ),
     );
   }
+
+  Widget _buildImageWidget() {
+    return _displayedImage != null
+        ? CircleAvatar(
+      backgroundImage: NetworkImage(_displayedImage!),
+      radius: 60,
+    )
+        : const CircularProgressIndicator();
+  }
+
+  List<Widget> _buildProfileMenuWidgets() {
+    return [
+      ProfileMenuWidget(
+        title: "Details",
+        icon: Icons.car_crash,
+        onPress: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VehicleDetails()),
+        ),
+      ),
+      ProfileMenuWidget(
+        title: "Settings",
+        icon: Icons.settings,
+        onPress: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EditVehicleDetails()),
+        ),
+      ),
+      ProfileMenuWidget(
+        title: "Repair Details",
+        icon: Icons.tire_repair_sharp,
+        onPress: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RepairDetails()),
+        ),
+      ),
+    ];
+  }
+}
 
   // Widget bottomSheet() {
   //   return Container(
@@ -232,4 +212,4 @@ class _VehicleScreenState extends State<VehicleScreen> {
   //     Navigator.pop(context); // Close the bottom sheet after selecting an image
   //   }
   // }
-}
+

@@ -34,22 +34,6 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     }
     return null;  // No vehicle data or user not logged in
   }
-  // Future<String?> fetchVehicleImageUrl() async {
-  //   User? user = FirebaseAuth.instance.currentUser;
-  //   if (user != null && user.email != null) {
-  //     var snapshot = await FirebaseFirestore.instance
-  //         .collection('vehicles')
-  //         .where('userEmail', isEqualTo: user.email)
-  //         .limit(1)
-  //         .get();
-  //
-  //     if (snapshot.docs.isNotEmpty) {
-  //       return snapshot.docs.first.data()['imageUrl'];  // Assuming 'imageUrl' is the field name
-  //     }
-  //   }
-  //   return null;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
