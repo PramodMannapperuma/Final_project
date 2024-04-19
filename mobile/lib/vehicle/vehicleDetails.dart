@@ -8,6 +8,7 @@ import 'package:mobile/vehicle/vehicle_edit.dart';
 import '../screens/profile_view.dart';
 import '../accident/accident_detail.dart';
 import 'get_vehidata.dart';
+import 'dart:io';
 
 class VehicleDetails extends StatefulWidget {
   const VehicleDetails({Key? key}) : super(key: key);
@@ -33,22 +34,6 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     }
     return null;  // No vehicle data or user not logged in
   }
-  // Future<String?> fetchVehicleImageUrl() async {
-  //   User? user = FirebaseAuth.instance.currentUser;
-  //   if (user != null && user.email != null) {
-  //     var snapshot = await FirebaseFirestore.instance
-  //         .collection('vehicles')
-  //         .where('userEmail', isEqualTo: user.email)
-  //         .limit(1)
-  //         .get();
-  //
-  //     if (snapshot.docs.isNotEmpty) {
-  //       return snapshot.docs.first.data()['imageUrl'];  // Assuming 'imageUrl' is the field name
-  //     }
-  //   }
-  //   return null;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
@@ -121,31 +106,38 @@ class _VehicleDetailsState extends State<VehicleDetails> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            Container(
-              height: 200,
-              width: double.infinity,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  // Background cover photo
-                  Container(
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/Images/cv.jpg"),
-                        fit: BoxFit.cover,
+            Stack(
+              children: [
+                  CircleAvatar(
+                    backgroundImage: displayedImage != null
+                        ? NetworkImage(displayedImage)
+                        : const AssetImage("assets/Images/well.jpg")
+                    as ImageProvider,
+                    radius: 60,
+                  ),
+                Positioned(
+                  bottom: 2,
+                  right: 4,
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.blueGrey.withOpacity(0.8),
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        // Open edit modal or bottom sheet
+                      },
+                      child: const Icon(
+                        Icons.edit,
+                        color: Colors.black54,
+                        size: 20,
                       ),
                     ),
                   ),
-                  // Circle avatar
-                  Positioned(
-                    bottom: 0, // Adjust the bottom position as needed
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(displayedImage),
-                      radius: 60,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width / 1.1,

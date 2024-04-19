@@ -5,13 +5,51 @@ import 'package:mobile/vehicle/vehicleScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future<Map<String, dynamic>?> fetchUserData() async {
+Future<String> fetchUserRole() async {
   User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-    return userDoc.data() as Map<String, dynamic>?;
+  if (user == null) {
+    print("No user logged in.");
+    return 'none';
   }
-  return null;
+
+  // Attempt to find the user in the 'users' collection
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .get();
+
+  if (userDoc.exists) {
+    print("Found user in 'users' collection.");
+    return 'user';  // Role is 'user'
+  }
+
+  // If not found in 'users', check in the 'garages' collection
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('garages')
+      .where('userEmail', isEqualTo: user.email)  // Using email as the identifier
+      .get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    // Access the first document, assuming only one will match the query
+    DocumentSnapshot garageDoc = querySnapshot.docs.first;
+    print("Found user in 'garages' collection with email: ${user.email}");
+    return 'garage';  // Role is 'garage'
+  }
+
+  // If not found in 'garages', check in the 'insurance' collection
+  DocumentSnapshot insuranceDoc = await FirebaseFirestore.instance
+      .collection('insurenceCo')
+      .doc(user.uid)  // Assuming uid is the identifier for insurance collection
+      .get();
+
+  if (insuranceDoc.exists) {
+    print("Found user in 'insurenceCo' collection.");
+    return 'insurance';  // Role is 'insurance'
+  }
+
+  // If the user is not found in any collection
+  print("User role not found in any collection.");
+  return 'none';  // Default role if none of the above
 }
 
 class MyHomePage extends StatefulWidget {
@@ -22,11 +60,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late Future<String> userRoleFuture = fetchUserRole();
   int selectedIndex = 0;
   late PageController pageController;
   final Color navigationBarColor = Colors.white;
+
+  @override
+  void initState() {
+    super.initState();
+    userRoleFuture =
+        fetchUserRole(); // Provide a default role in case of an error
+  }
+
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: userRoleFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            return buildHomePage(snapshot.data ?? 'none');
+          }
+        }
+        return Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ); // Show a loading spinner while waiting
+      },
+    );
+  }
+
+  Widget buildHomePage(String role) {
+    switch (role) {
+      case 'user':
+        return UserHomePage(); // Widget for users
+      case 'garage':
+        return GarageHomePage(); // Widget for garage owners
+      case 'insurance':
+        return InsuranceHomePage(); // Widget for insurance agents
+      default:
+        return buildDefaultHomePage();
+    }
+  }
+
+  Widget UserHomePage() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -71,49 +149,52 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(
                           // width: 20.0,
                           ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Hello, ",
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello, ",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          FutureBuilder<Map<String, dynamic>?>(
+                            future: fetchUserData(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasData && snapshot.data != null) {
+                                  String firstName =
+                                      snapshot.data!['firstName'] ?? 'User';
+                                  String lastName =
+                                      snapshot.data!['lastName'] ?? '';
+                                  return Text(
+                                    "$firstName $lastName",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "User",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // While waiting for the data to load, you can display a loading spinner or similar widget
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                      FutureBuilder<Map<String, dynamic>?>(
-                        future: fetchUserData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
-                            if (snapshot.hasData && snapshot.data != null) {
-                              String firstName = snapshot.data!['firstName'] ?? 'User';
-                              String lastName = snapshot.data!['lastName'] ?? '';
-                              return Text(
-                                "$firstName $lastName",
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                ),
-                              );
-                            } else {
-                              return Text(
-                                "User",
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                ),
-                              );
-                            }
-                          } else {
-                            // While waiting for the data to load, you can display a loading spinner or similar widget
-                            return CircularProgressIndicator();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
                     ],
                   ),
                 ),
@@ -212,12 +293,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Divider(thickness: 1),
                   const SizedBox(height: 20),
                   const SizedBox(height: 20),
-                  ClickableCard(
-                    title: 'Card 3',
-                    onTap: () {
-                      // Handle card tap
-                    },
-                  ),
                 ],
               ),
             ],
@@ -226,30 +301,36 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
 
-class ClickableCard extends StatelessWidget {
-  final String title;
-  final Function onTap;
+  Widget buildDefaultHomePage() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Default Home Page"),
+      ),
+      body: Center(
+        child: Text("No specific role found, displaying default home page."),
+      ),
+    );
+  }
 
-  const ClickableCard({super.key, required this.title, required this.onTap});
+  Widget GarageHomePage() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Default Home Page"),
+      ),
+      body: Center(
+        child: Text("No specific role found, displaying default home page."),
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onTap();
-      },
-      child: Card(
-        // color: Colors.blue,
-        child: SizedBox(
-          height: 110,
-          width: 170,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(title),
-          ),
-        ),
+  Widget InsuranceHomePage() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Default Home Page"),
+      ),
+      body: Center(
+        child: Text("No specific role found, displaying default home page."),
       ),
     );
   }
