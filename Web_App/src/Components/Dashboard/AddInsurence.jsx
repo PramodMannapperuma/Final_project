@@ -57,7 +57,7 @@ const AddInsurence = ({ onAddInsurence }) => {
       };
 
       const docRef = await addDoc(
-        collection(firestore, "insurenceCo"),
+        collection(firestore, "insurenceCo",),
         newInsurence
       );
       newInsurence.id = docRef.id;
