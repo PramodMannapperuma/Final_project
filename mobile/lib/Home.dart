@@ -312,7 +312,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
   Widget GarageHomePage() {
     return Scaffold(
       appBar: AppBar(
@@ -324,7 +323,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
   Widget InsuranceHomePage() {
     return Scaffold(
       appBar: AppBar(
