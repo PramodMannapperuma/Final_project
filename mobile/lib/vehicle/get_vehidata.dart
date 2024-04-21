@@ -54,7 +54,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.model,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Model',
                 ),
                 onChanged: (value) => setState(() => vehicleData.model = value),
@@ -67,7 +67,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.model,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Year',
                 ),
                 onChanged: (value) => setState(() => vehicleData.year = value),
@@ -80,7 +80,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.color,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Color',
                 ),
                 onChanged: (value) => setState(() => vehicleData.color = value),
@@ -128,7 +128,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.fuelType,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Fuel Type',
                 ),
                 onChanged: (value) =>
@@ -142,7 +142,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.horsePower,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Horse Power',
                 ),
                 onChanged: (value) =>
