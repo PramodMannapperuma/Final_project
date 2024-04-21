@@ -67,7 +67,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.model,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Year',
                 ),
                 onChanged: (value) => setState(() => vehicleData.year = value),
@@ -80,7 +80,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.color,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Color',
                 ),
                 onChanged: (value) => setState(() => vehicleData.color = value),
