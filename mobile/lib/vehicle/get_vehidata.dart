@@ -128,7 +128,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.fuelType,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Fuel Type',
                 ),
                 onChanged: (value) =>
@@ -142,7 +142,7 @@ class _VehicleDetailsFormState extends State<VehicleDetailsForm> {
               ),
               TextFormField(
                 initialValue: vehicleData.horsePower,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Horse Power',
                 ),
                 onChanged: (value) =>
