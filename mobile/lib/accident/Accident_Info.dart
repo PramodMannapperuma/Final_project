@@ -32,7 +32,7 @@ class _AccidentInfoState extends State<AccidentInfo> {
                   ),
                 ],
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
@@ -41,8 +41,8 @@ class _AccidentInfoState extends State<AccidentInfo> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Row(
+              const SizedBox(height: 20),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
@@ -71,11 +71,11 @@ class _AccidentInfoState extends State<AccidentInfo> {
                   viewportFraction: 0.8,
                 ),
               ),
-              Text(
+              const Text(
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               const ProfileDetailColumn(
