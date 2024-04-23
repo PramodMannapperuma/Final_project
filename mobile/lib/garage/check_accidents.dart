@@ -14,7 +14,7 @@ class _CheckAccidentsState extends State<CheckAccidents> {
       appBar: AppBar(
         title: Text("Accidents"),
       ),
-      body: Center(
+      body: const Center(
         child: Text("Accidents"),
       ),
     );
