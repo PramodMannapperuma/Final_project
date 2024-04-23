@@ -14,15 +14,15 @@ class _AccidentDetailsState extends State<AccidentDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Repair Details"),
+        title: const Text("Repair Details"),
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
@@ -31,7 +31,7 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   ),
                 ],
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
@@ -40,10 +40,10 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
@@ -72,7 +72,7 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AccidentInfo(),
+                      builder: (context) => const AccidentInfo(),
                     ),
                   );
                 },
@@ -102,7 +102,6 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   thickness: 1.0,
                 ),
               ),
-
               GestureDetector(
                 onTap: () {},
                 child: const Row(
