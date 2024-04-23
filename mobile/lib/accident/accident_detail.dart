@@ -31,7 +31,7 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   ),
                 ],
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
