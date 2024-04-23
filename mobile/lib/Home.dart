@@ -302,7 +302,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
   Widget buildDefaultHomePage() {
     return Scaffold(
       appBar: AppBar(
