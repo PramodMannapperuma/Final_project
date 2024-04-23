@@ -72,7 +72,7 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AccidentInfo(),
+                      builder: (context) => const AccidentInfo(),
                     ),
                   );
                 },
