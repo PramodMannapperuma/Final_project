@@ -14,7 +14,7 @@ class _AccidentDetailsState extends State<AccidentDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Repair Details"),
+        title: const Text("Repair Details"),
       ),
       body: SingleChildScrollView(
         child: Container(
