@@ -102,7 +102,6 @@ class _AccidentDetailsState extends State<AccidentDetails> {
                   thickness: 1.0,
                 ),
               ),
-
               GestureDetector(
                 onTap: () {},
                 child: const Row(
