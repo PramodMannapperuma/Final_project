@@ -12,7 +12,7 @@ class _CheckAccidentsState extends State<CheckAccidents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Accidents"),
+        title: const Text("Accidents"),
       ),
       body: const Center(
         child: Text("Accidents"),
