@@ -39,6 +39,7 @@ Future<String> fetchUserRole() async {
       .collection('insurenceCo')
       .where('userId', isEqualTo: user.uid)
       .get();
+  print("user Id ${user.uid}");
 
   if (insuranceQuery.docs.isNotEmpty) {
     print("Found user in 'insurenceCo' collection.");
@@ -318,8 +319,182 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("Garage Home Page"),
         centerTitle: true,
       ),
-      body: Center(
-        child: Text("Garage found, displaying Garage home page."),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                width: double.infinity,
+                height: 100,
+                decoration: const BoxDecoration(
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8.0),
+                    bottomRight: Radius.circular(8.0),
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        // width: 20.0,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Hello, ",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          FutureBuilder<Map<String, dynamic>?>(
+                            future: fetchUserData(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasData && snapshot.data != null) {
+                                  String firstName =
+                                      snapshot.data!['firstName'] ?? 'User';
+                                  String lastName =
+                                      snapshot.data!['lastName'] ?? '';
+                                  return Text(
+                                    "$firstName ",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "User",
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // While waiting for the data to load, you can display a loading spinner or similar widget
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Image.asset(
+                  'assets/Images/garage1.webp',
+                  width: 500, // Set the width of the image
+                  height: 220, // Set the height of the image
+                ),
+              ),
+              Column(
+                children: [
+                  const Divider(),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PdfFilePicker(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.receipt), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        Text(
+                          "Check Accidents",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        // Image.asset(
+                        //   "assets/Images/home.jpg",
+                        //   height: 50,
+                        //   width: 50,
+                        // )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VehicleScreen(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(
+                            Icons.directions_car), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        Text(
+                          "Check Repairs",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(Icons.person), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        Text(
+                          "User Profile",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
