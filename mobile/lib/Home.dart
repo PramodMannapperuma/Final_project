@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/garage/check_accidents.dart';
+import 'package:mobile/garage/check_repairs.dart';
+import 'package:mobile/garage/garage_profile.dart';
 import 'package:mobile/screens/profile.dart';
 import 'package:mobile/screens/revenue_liscense.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
@@ -412,7 +415,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PdfFilePicker(),
+                          builder: (context) => CheckAccidents(),
                         ),
                       );
                     },
@@ -442,7 +445,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => VehicleScreen(),
+                          builder: (context) => CheckRepairs(),
                         ),
                       );
                     },
@@ -468,7 +471,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Profile(),
+                          builder: (context) => GarageProfile(),
                         ),
                       );
                     },
