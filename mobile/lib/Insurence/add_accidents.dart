@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CheckAccidents extends StatefulWidget {
-  const CheckAccidents({super.key});
+class AddAccidents extends StatefulWidget {
+  const AddAccidents({super.key});
 
   @override
-  State<CheckAccidents> createState() => _CheckAccidentsState();
+  State<AddAccidents> createState() => _AddAccidentsState();
 }
 
-class _CheckAccidentsState extends State<CheckAccidents> {
+class _AddAccidentsState extends State<AddAccidents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/accident/accident_detail.dart';
+import 'package:mobile/Insurence/add_accidents.dart';
+import 'package:mobile/garage/add_repairs.dart';
+import 'package:mobile/garage/check_repairs.dart';
+import 'package:mobile/garage/garage_profile.dart';
+import 'package:mobile/repair/repair_details.dart';
 import 'package:mobile/screens/profile.dart';
 import 'package:mobile/screens/revenue_liscense.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 Future<String> fetchUserRole() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -412,13 +419,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PdfFilePicker(),
+                          builder: (context) => AccidentDetails(),
                         ),
                       );
                     },
                     child: const Row(
                       children: [
-                        Icon(Icons.receipt), // Add your desired icon here
+                        Icon(FluentIcons.vehicle_car_collision_28_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -442,14 +449,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => VehicleScreen(),
+                          builder: (context) => RepairDetails(),
                         ),
                       );
                     },
                     child: const Row(
                       children: [
-                        Icon(
-                            Icons.directions_car), // Add your desired icon here
+                        Icon(FluentIcons.settings_cog_multiple_24_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -468,13 +474,38 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Profile(),
+                          builder: (context) => AddRepair(),
                         ),
                       );
                     },
                     child: const Row(
                       children: [
-                        Icon(Icons.person), // Add your desired icon here
+                        Icon(FluentIcons.add_square_multiple_24_filled), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        Text(
+                          "Add Repairs",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GarageProfile(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(FluentIcons.person_accounts_24_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -597,7 +628,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PdfFilePicker(),
+                          builder: (context) => AddAccidents(),
                         ),
                       );
                     },
@@ -608,7 +639,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 10,
                         ), // Add some spacing between the icon and text
                         Text(
-                          "Revenue License",
+                          "Add Accident",
                           style: TextStyle(fontSize: 20),
                         ),
                         // Image.asset(
@@ -619,32 +650,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Divider(thickness: 1),
-                  const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VehicleScreen(),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                            Icons.directions_car), // Add your desired icon here
-                        const SizedBox(
-                          width: 10,
-                        ), // Add some spacing between the icon and text
-                        const Text(
-                          "Vehicle",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
-                  ),
+
                   const SizedBox(height: 20),
                   const Divider(thickness: 1),
                   const SizedBox(height: 20),
@@ -657,14 +663,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(Icons.person), // Add your desired icon here
-                        const SizedBox(
+                        SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
-                        const Text(
-                          "User Profile",
+                        Text(
+                          "Insurance Co Profile",
                           style: TextStyle(fontSize: 20),
                         ),
                       ],
