@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile/vehicle/vehicleDetails.dart';
 import 'dart:io';
 
 class AddRepair extends StatefulWidget {
@@ -29,65 +28,52 @@ class _AddRepairState extends State<AddRepair> {
       content: Column(
         children: [
           TextFormField(
-            initialValue: repairData.vin,
+            initialValue: repairData.vehicleNumber,
             decoration: InputDecoration(
-                labelText: 'Vehicle Indentification Number (VIN)'),
-            onChanged: (value) => setState(() => repairData.vin = value),
+                labelText: 'Vehicle Number'),
+            onChanged: (value) => setState(() => repairData.vehicleNumber = value ?? "na"),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the VIN';
+                return 'Please enter the Number';
               }
               return null; // indicates the input is correct
             },
           ),
           TextFormField(
-            initialValue: repairData.make,
+            initialValue: repairData.repair,
             decoration: InputDecoration(
-              labelText: 'Make',
+              labelText: 'Repair',
             ),
-            onChanged: (value) => setState(() => repairData.make = value),
+            onChanged: (value) => setState(() => repairData.repair = value),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the Make';
+                return 'Please enter the Repair';
               }
               return null; // indicates the input is correct
             },
           ),
           TextFormField(
-            initialValue: repairData.model,
+            initialValue: repairData.location,
             decoration: const InputDecoration(
-              labelText: 'Model',
+              labelText: 'Location',
             ),
-            onChanged: (value) => setState(() => repairData.model = value),
+            onChanged: (value) => setState(() => repairData.location = value),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the Model';
+                return 'Please enter the Location';
               }
               return null; // indicates the input is correct
             },
           ),
           TextFormField(
-            initialValue: repairData.model,
+            initialValue: repairData.location,
             decoration: const InputDecoration(
-              labelText: 'Year',
+              labelText: 'Describe the repair',
             ),
-            onChanged: (value) => setState(() => repairData.year = value),
+            onChanged: (value) => setState(() => repairData.description = value),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the Year';
-              }
-              return null; // indicates the input is correct
-            },
-          ),
-          TextFormField(
-            initialValue: repairData.color,
-            decoration: const InputDecoration(
-              labelText: 'Color',
-            ),
-            onChanged: (value) => setState(() => repairData.color = value),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the Color';
+                return 'Please describe the repair';
               }
               return null; // indicates the input is correct
             },
@@ -95,94 +81,18 @@ class _AddRepairState extends State<AddRepair> {
         ],
       ),
     ),
+
     Step(
       state: _activeStepIndex <= 1 ? StepState.editing : StepState.complete,
       isActive: _activeStepIndex >= 1,
-      title: Text('Advance'),
-      content: Column(
-        children: [
-          TextFormField(
-            initialValue: repairData.licensePlateNumber,
-            decoration: InputDecoration(labelText: 'License Plate Number'),
-            onChanged: (value) =>
-                setState(() => repairData.licensePlateNumber = value),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the License Plate Number';
-              }
-              return null; // indicates the input is correct
-            },
-          ),
-          TextFormField(
-            initialValue: repairData.engineType,
-            decoration: InputDecoration(
-              labelText: 'Engine Type',
-            ),
-            onChanged: (value) =>
-                setState(() => repairData.engineType = value),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the Engine Type';
-              }
-              return null; // indicates the input is correct
-            },
-          ),
-          TextFormField(
-            initialValue: repairData.fuelType,
-            decoration: const InputDecoration(
-              labelText: 'Fuel Type',
-            ),
-            onChanged: (value) =>
-                setState(() => repairData.fuelType = value),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the Fuel Type';
-              }
-              return null; // indicates the input is correct
-            },
-          ),
-          TextFormField(
-            initialValue: repairData.horsePower,
-            decoration: const InputDecoration(
-              labelText: 'Horse Power',
-            ),
-            onChanged: (value) =>
-                setState(() => repairData.horsePower = value),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the Horse Power';
-              }
-              return null; // indicates the input is correct
-            },
-          ),
-          TextFormField(
-            initialValue: repairData.transmission,
-            decoration: InputDecoration(
-              labelText: 'Transmission',
-            ),
-            onChanged: (value) =>
-                setState(() => repairData.transmission = value),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the Transmission';
-              }
-              return null; // indicates the input is correct
-            },
-          ),
-        ],
-      ),
-    ),
-    Step(
-      state: _activeStepIndex <= 2 ? StepState.editing : StepState.complete,
-      isActive: _activeStepIndex >= 2,
-      title: Text('Photos'),
+      title: Text('Add Photos'),
       content: SingleChildScrollView(
         child: Column(
           children: [
             _buildImageListView(),
             ElevatedButton(
               onPressed: _pickImages,
-              child: Text('Add Vehicle Images'),
+              child: Text('Add Repair Images'),
             ),
             SizedBox(height: 10),
           ],
@@ -203,7 +113,7 @@ class _AddRepairState extends State<AddRepair> {
   Widget _buildImageListView() {
     return SizedBox(
       height: 300, // Set the height of the horizontal list
-      width: 400,
+      width: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _vehicleImages.length,
@@ -239,7 +149,7 @@ class _AddRepairState extends State<AddRepair> {
 
   Future<void> uploadRepairDataWithImages() async {
     showLoadingDialog(context); // Show loading dialog
-    CollectionReference vehicles =
+    CollectionReference repairs =
     FirebaseFirestore.instance.collection('repairs');
     List<String> imageUrls =
     await uploadImagesAndGetUrls(); // Get image URLs from storage
@@ -256,37 +166,32 @@ class _AddRepairState extends State<AddRepair> {
     }
 
     try {
-      await vehicles.add({
-        'userEmail' : userEmail,
-        'vin': repairData.vin,
-        'make': repairData.make,
-        'model': repairData.model,
-        'year': repairData.year,
-        'color': repairData.color,
-        'licensePlateNumber': repairData.licensePlateNumber,
-        'engineType': repairData.engineType,
-        'fuelType': repairData.fuelType,
-        'horsePower': repairData.horsePower,
-        'transmission': repairData.transmission,
+      await repairs.add({
+        'garageEmail' : userEmail,
+        'vehicleNumber': repairData.vehicleNumber,
+        'repair': repairData.repair,
+        'location': repairData.location,
+        'description': repairData.description,
+        'date&time': DateTime.now(),
         'imageUrls': imageUrls, // Store image URLs in Firestore
       });
       Navigator.of(context).pop(); // Dismiss the loading dialog
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Vehicle details saved successfully!'),
+          content: Text('Repair details saved successfully!'),
         ),
       );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => VehicleDetails(),
+          builder: (context) => AddRepair(),
         ),
       );
     } catch (e) {
       Navigator.of(context).pop(); // Dismiss the loading dialog
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to update vehicle details : $e'),
+          content: Text('Failed to update repair details : $e'),
         ),
       );
     }
@@ -308,7 +213,7 @@ class _AddRepairState extends State<AddRepair> {
           setState(() => _activeStepIndex += 1);
         } else {
           // Last step
-          uploadImagesAndGetUrls();
+          // uploadImagesAndGetUrls();
           uploadRepairDataWithImages();
         }
       },
@@ -343,29 +248,18 @@ void showLoadingDialog(BuildContext context) {
   );
 }
 class RepairData {
-  String vin;
-  String make;
-  String model;
-  String year;
-  String color;
-  String licensePlateNumber;
-  String engineType;
-  String fuelType;
-  String horsePower;
-  String transmission;
+  String vehicleNumber;
+  String repair;
+  String location;
+  String description;
+
 
   // Add more fields as necessary
 
   RepairData({
-    this.vin = '',
-    this.make = '',
-    this.model = '',
-    this.year = '',
-    this.color = '',
-    this.licensePlateNumber = '',
-    this.engineType = '',
-    this.fuelType = '',
-    this.horsePower = '',
-    this.transmission = '',
+    this.vehicleNumber = '',
+    this.repair = '',
+    this.location = '',
+    this.description = '',
   });
 }
