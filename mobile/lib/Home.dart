@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/accident/accident_detail.dart';
-import 'package:mobile/garage/check_accidents.dart';
+import 'package:mobile/garage/add_accidents.dart';
 import 'package:mobile/garage/check_repairs.dart';
 import 'package:mobile/garage/garage_profile.dart';
 import 'package:mobile/repair/repair_details.dart';
@@ -602,7 +602,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PdfFilePicker(),
+                          builder: (context) => AddAccidents(),
                         ),
                       );
                     },
@@ -613,7 +613,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 10,
                         ), // Add some spacing between the icon and text
                         Text(
-                          "Revenue License",
+                          "Add Accident",
                           style: TextStyle(fontSize: 20),
                         ),
                         // Image.asset(
@@ -624,32 +624,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Divider(thickness: 1),
-                  const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VehicleScreen(),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                            Icons.directions_car), // Add your desired icon here
-                        const SizedBox(
-                          width: 10,
-                        ), // Add some spacing between the icon and text
-                        const Text(
-                          "Vehicle",
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ],
-                    ),
-                  ),
+
                   const SizedBox(height: 20),
                   const Divider(thickness: 1),
                   const SizedBox(height: 20),
@@ -662,14 +637,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(Icons.person), // Add your desired icon here
-                        const SizedBox(
+                        SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
-                        const Text(
-                          "User Profile",
+                        Text(
+                          "Insurance Co Profile",
                           style: TextStyle(fontSize: 20),
                         ),
                       ],
