@@ -10,6 +10,7 @@ class CheckRepairs extends StatefulWidget {
 }
 
 class _CheckRepairsState extends State<CheckRepairs> {
+  TextEditingController searchController = TextEditingController();
 
   Future<Map<String, dynamic>?> fetchCurrentUserDetails() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -38,6 +39,23 @@ class _CheckRepairsState extends State<CheckRepairs> {
     return null;
   }
 
+  List<Map<String, dynamic>> repairsList = [];
+
+  void searchRepairs(String vehicleNumber) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('repairs')
+          .where('vehicleNumber', isEqualTo: vehicleNumber)
+          .get();
+
+      setState(() {
+        repairsList = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      });
+    } catch (e) {
+      print("Error searching repairs: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +82,7 @@ class _CheckRepairsState extends State<CheckRepairs> {
                       String email = snapshot.data!['email'] ?? 'No email found';
                       return Column(
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
@@ -95,6 +113,48 @@ class _CheckRepairsState extends State<CheckRepairs> {
                 child: const Divider(
                   thickness: 1.0,
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    labelText: "Enter Vehicle Number",
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        String vehicleNumber = searchController.text.trim();
+                        searchRepairs(vehicleNumber);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: repairsList.length,
+                itemBuilder: (context, index) {
+                  Map<String, dynamic> repairData = repairsList[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Add your navigation or action here
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Icon(Icons.settings_outlined), // Add your desired icon here
+                        SizedBox(width: 40), // Add some spacing between the icon and text
+                        Text(
+                          repairData['description'] ?? 'No Description',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        SizedBox(width: 40),
+                        Icon(Icons.arrow_forward_ios_rounded),
+                      ],
+                    ),
+                  );
+                },
               ),
             ],
           ),
