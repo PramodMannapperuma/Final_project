@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/accident/accident_detail.dart';
 import 'package:mobile/garage/check_accidents.dart';
 import 'package:mobile/garage/check_repairs.dart';
 import 'package:mobile/garage/garage_profile.dart';
+import 'package:mobile/repair/repair_details.dart';
 import 'package:mobile/screens/profile.dart';
 import 'package:mobile/screens/revenue_liscense.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
@@ -415,7 +417,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CheckAccidents(),
+                          builder: (context) => AccidentDetails(),
                         ),
                       );
                     },
@@ -445,7 +447,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CheckRepairs(),
+                          builder: (context) => RepairDetails(),
                         ),
                       );
                     },
