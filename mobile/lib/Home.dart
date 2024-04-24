@@ -449,7 +449,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RepairDetails(),
+                          builder: (context) => CheckRepairs(),
                         ),
                       );
                     },
