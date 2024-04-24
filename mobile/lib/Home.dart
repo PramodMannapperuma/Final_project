@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/accident/accident_detail.dart';
 import 'package:mobile/Insurence/add_accidents.dart';
+import 'package:mobile/garage/add_repairs.dart';
 import 'package:mobile/garage/check_repairs.dart';
 import 'package:mobile/garage/garage_profile.dart';
 import 'package:mobile/repair/repair_details.dart';
@@ -9,6 +10,7 @@ import 'package:mobile/screens/revenue_liscense.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 
 Future<String> fetchUserRole() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -423,7 +425,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: const Row(
                       children: [
-                        Icon(Icons.receipt), // Add your desired icon here
+                        Icon(FluentIcons.vehicle_car_collision_28_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -453,8 +455,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: const Row(
                       children: [
-                        Icon(
-                            Icons.directions_car), // Add your desired icon here
+                        Icon(FluentIcons.settings_cog_multiple_24_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -473,14 +474,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RepairDetails(),
+                          builder: (context) => AddRepair(),
                         ),
                       );
                     },
                     child: const Row(
                       children: [
-                        Icon(
-                            Icons.directions_car), // Add your desired icon here
+                        Icon(FluentIcons.add_square_multiple_24_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -505,7 +505,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: const Row(
                       children: [
-                        Icon(Icons.person), // Add your desired icon here
+                        Icon(FluentIcons.person_accounts_24_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
