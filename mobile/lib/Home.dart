@@ -615,8 +615,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: Image.asset(
-                  'assets/Images/shit.jpg',
-                  width: 400, // Set the width of the image
+                  'assets/Images/insu.webp',
+                  width: 420, // Set the width of the image
                   height: 200, // Set the height of the image
                 ),
               ),
