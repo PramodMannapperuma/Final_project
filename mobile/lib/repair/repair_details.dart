@@ -58,7 +58,7 @@ class _RepairDetailsState extends State<RepairDetails> {
 
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => RepairInfo(),),);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RepairDetails(),),);
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

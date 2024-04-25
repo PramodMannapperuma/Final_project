@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/repair/repair_Info.dart';
 
 class CheckRepairs extends StatefulWidget {
   const CheckRepairs({super.key});
@@ -49,7 +51,9 @@ class _CheckRepairsState extends State<CheckRepairs> {
           .get();
 
       setState(() {
-        repairsList = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+        repairsList = querySnapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList();
       });
     } catch (e) {
       print("Error searching repairs: $e");
@@ -73,13 +77,12 @@ class _CheckRepairsState extends State<CheckRepairs> {
                   future: fetchCurrentUserDetails(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     } else if (snapshot.hasError) {
                       return Text("Error: ${snapshot.error}");
                     } else if (snapshot.hasData && snapshot.data != null) {
                       // Use null safety check to avoid potential null errors
                       String firstName = snapshot.data!['name'] ?? 'First Name';
-                      String email = snapshot.data!['email'] ?? 'No email found';
                       return Column(
                         children: [
                           const Row(
@@ -103,10 +106,10 @@ class _CheckRepairsState extends State<CheckRepairs> {
                         ],
                       );
                     } else {
-                      return Text("No user data available");  // Handle case where no data is available
+                      return Text(
+                          "No user data available"); // Handle case where no data is available
                     }
-                  }
-              ),
+                  }),
               SizedBox(
                 height: 30,
                 width: MediaQuery.of(context).size.width / 1.1,
@@ -135,24 +138,44 @@ class _CheckRepairsState extends State<CheckRepairs> {
                 itemCount: repairsList.length,
                 itemBuilder: (context, index) {
                   Map<String, dynamic> repairData = repairsList[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // Add your navigation or action here
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Icon(Icons.settings_outlined), // Add your desired icon here
-                        SizedBox(width: 40), // Add some spacing between the icon and text
-                        Text(
-                          repairData['description'] ?? 'No Description',
-                          style: TextStyle(fontSize: 20),
+                  return Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          String repairId = repairsList[index]['repairId'] ?? "300";
+                          Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RepairInfo( repairId: repairId,),
+                          ),
+                        );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Icon(FluentIcons
+                                .settings_chat_20_filled), // Add your desired icon here
+                            SizedBox(
+                                width:
+                                    40), // Add some spacing between the icon and text
+                            Text(
+                              repairData['repair'] ?? 'No Description',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(width: 40),
+                            Icon(Icons.arrow_forward_ios_rounded),
+                          ],
                         ),
-                        SizedBox(width: 40),
-                        Icon(Icons.arrow_forward_ios_rounded),
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        child: const Divider(
+                          thickness: 1.0,
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
