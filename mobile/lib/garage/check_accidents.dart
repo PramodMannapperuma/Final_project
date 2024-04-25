@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/repair/repair_Info.dart';
+import 'package:mobile/accident/Accident_Info.dart';
 
-class CheckRepairs extends StatefulWidget {
-  const CheckRepairs({super.key});
+class CheckAccidents extends StatefulWidget {
+  const CheckAccidents({super.key});
 
   @override
-  State<CheckRepairs> createState() => _CheckRepairsState();
+  State<CheckAccidents> createState() => _CheckAccidentsState();
 }
 
-class _CheckRepairsState extends State<CheckRepairs> {
+class _CheckAccidentsState extends State<CheckAccidents> {
   TextEditingController searchController = TextEditingController();
 
   Future<Map<String, dynamic>?> fetchCurrentUserDetails() async {
@@ -65,7 +65,7 @@ class _CheckRepairsState extends State<CheckRepairs> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Repair Details"),
+        title: const Text("Check Accidents"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -145,11 +145,11 @@ class _CheckRepairsState extends State<CheckRepairs> {
                           String repairId = repairsList[index]['reapirId'] ?? "300";
                           print("repair id is $repairId");
                           Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RepairInfo( repairId: repairId,),
-                          ),
-                        );
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AccidentInfo(),
+                            ),
+                          );
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -159,7 +159,7 @@ class _CheckRepairsState extends State<CheckRepairs> {
                                 .settings_chat_20_filled), // Add your desired icon here
                             SizedBox(
                                 width:
-                                    40), // Add some spacing between the icon and text
+                                40), // Add some spacing between the icon and text
                             Text(
                               repairData['repair'] ?? 'No Description',
                               style: TextStyle(fontSize: 20),
@@ -187,3 +187,4 @@ class _CheckRepairsState extends State<CheckRepairs> {
     );
   }
 }
+
