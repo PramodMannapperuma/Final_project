@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import '../screens/profile_view.dart';
 
 class RepairInfo extends StatefulWidget {
-  const RepairInfo({super.key});
+  final String repairId;
+
+  const RepairInfo({Key? key, required this.repairId}) : super(key: key);
 
   @override
   State<RepairInfo> createState() => _RepairInfoState();
@@ -15,6 +17,7 @@ class _RepairInfoState extends State<RepairInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Repair Details"),
       ),
       body: SingleChildScrollView(
@@ -86,9 +89,9 @@ class _RepairInfoState extends State<RepairInfo> {
                   title: 'Repairs ',
                   value: 'Changed Tyres | Checked Alignments '),
               const ProfileDetailColumn(
-                    title: 'Description Of Repair',
+                  title: 'Description Of Repair',
                   value:
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
             ],
           ),
         ),

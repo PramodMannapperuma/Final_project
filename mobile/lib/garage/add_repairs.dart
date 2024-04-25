@@ -19,7 +19,7 @@ class _AddRepairState extends State<AddRepair> {
   List<XFile> _vehicleImages = [];
 
   RepairData repairData = RepairData();
-  
+
   List<Step> stepList() => [
     Step(
       state: _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
@@ -166,7 +166,9 @@ class _AddRepairState extends State<AddRepair> {
     }
 
     try {
-      await repairs.add({
+      String repairId = DateTime.now().millisecondsSinceEpoch.toString();
+      await repairs.doc(repairId).set({
+        'reapirId' : repairId,
         'garageEmail' : userEmail,
         'vehicleNumber': repairData.vehicleNumber,
         'repair': repairData.repair,
