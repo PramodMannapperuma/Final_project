@@ -18,7 +18,6 @@ class VehicleDetails extends StatefulWidget {
 }
 
 class _VehicleDetailsState extends State<VehicleDetails> {
-
   Future<Map<String, dynamic>?> checkForVehicleData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null && user.email != null) {
@@ -29,11 +28,13 @@ class _VehicleDetailsState extends State<VehicleDetails> {
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs.first.data() as Map<String, dynamic>;  // Assuming this contains all necessary vehicle data
+        return snapshot.docs.first.data() as Map<String,
+            dynamic>; // Assuming this contains all necessary vehicle data
       }
     }
-    return null;  // No vehicle data or user not logged in
+    return null; // No vehicle data or user not logged in
   }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
@@ -42,7 +43,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data != null) {
             // Data exists, proceed to show vehicle details
-            return buildVehicleDetailsPage(context,snapshot.data!);
+            return buildVehicleDetailsPage(context, snapshot.data!);
           } else {
             // No data exists, navigate to VehicleDetailsForm to add new vehicle
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -63,25 +64,29 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     );
   }
 
-
-  Widget buildVehicleDetailsPage(BuildContext context, Map<String, dynamic> vehicleData) {
+  Widget buildVehicleDetailsPage(
+      BuildContext context, Map<String, dynamic> vehicleData) {
     var imageUrl = vehicleData['imageUrls'];
     String displayedImage;
 
     if (imageUrl is List && imageUrl.isNotEmpty) {
-      displayedImage = imageUrl.first;  // Assuming the list contains string URLs and you want the first one
+      displayedImage = imageUrl
+          .first; // Assuming the list contains string URLs and you want the first one
     } else if (imageUrl is String) {
       displayedImage = imageUrl;
     } else {
-      displayedImage = 'assets/Images/well.jpg';  // Default image if no URL is provided
+      displayedImage =
+          'assets/Images/well.jpg'; // Default image if no URL is provided
     }
     List<String> imageUrls = List<String>.from(vehicleData['imageUrls'] ?? []);
-    List<Widget> imageSliders = imageUrls.map((url) => Container(
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        child: Image.network(url, fit: BoxFit.cover, width: 1000.0),
-      ),
-    )).toList();
+    List<Widget> imageSliders = imageUrls
+        .map((url) => Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                child: Image.network(url, fit: BoxFit.cover, width: 1000.0),
+              ),
+            ))
+        .toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vehicle Profile'),
@@ -90,7 +95,8 @@ class _VehicleDetailsState extends State<VehicleDetails> {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              String vehicleId = 'your-vehicle-id-here'; // Replace this with actual vehicle ID
+              String vehicleId =
+                  'your-vehicle-id-here'; // Replace this with actual vehicle ID
 
               Navigator.push(
                 context,
@@ -108,13 +114,13 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             const SizedBox(height: 10),
             Stack(
               children: [
-                  CircleAvatar(
-                    backgroundImage: displayedImage != null
-                        ? NetworkImage(displayedImage)
-                        : const AssetImage("assets/Images/well.jpg")
-                    as ImageProvider,
-                    radius: 60,
-                  ),
+                CircleAvatar(
+                  backgroundImage: displayedImage != null
+                      ? NetworkImage(displayedImage)
+                      : const AssetImage("assets/Images/well.jpg")
+                          as ImageProvider,
+                  radius: 60,
+                ),
                 Positioned(
                   bottom: 2,
                   right: 4,
@@ -155,29 +161,29 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 ),
               ],
             ),
-
             SizedBox(
               width: MediaQuery.of(context).size.width / 1.1,
               child: const Column(
                 children: [
                   Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
-                    style: TextStyle(fontSize: 16, ),),
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
                   Divider(
                     thickness: 1.0,
                   ),
                 ],
               ),
             ),
-
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ProfileDetailColumn(
-                  title: 'Vehicle Identification Number (VIN)',
-                value: '${vehicleData['vin'] ?? 'N/A'}'),
-
+                    title: 'Vehicle Identification Number (VIN)',
+                    value: '${vehicleData['vin'] ?? 'N/A'}'),
               ],
             ),
             Row(
@@ -206,7 +212,6 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 ),
               ],
             ),
-
             GestureDetector(
               onTap: () {
                 // Handle tapping on Miles
@@ -227,7 +232,12 @@ class _VehicleDetailsState extends State<VehicleDetails> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileDetails(),),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileDetails(),
+                  ),
+                );
               },
               child: ProfileDetailColumn(
                 title: 'Fuel Type',
@@ -263,12 +273,12 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 thickness: 1.0,
               ),
             ),
-
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RepairDetails()),
+                  MaterialPageRoute(
+                      builder: (context) => const RepairDetails()),
                 );
               },
               child: Container(
@@ -297,12 +307,12 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 thickness: 1.0,
               ),
             ),
-
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AccidentDetails()),
+                  MaterialPageRoute(
+                      builder: (context) => const AccidentDetails()),
                 );
               },
               child: Container(
@@ -331,7 +341,6 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 thickness: 1.0,
               ),
             ),
-
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -372,4 +381,3 @@ class _VehicleDetailsState extends State<VehicleDetails> {
     );
   }
 }
-

@@ -142,7 +142,8 @@ class _CheckRepairsState extends State<CheckRepairs> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          String repairId = repairsList[index]['repairId'] ?? "300";
+                          String repairId = repairsList[index]['reapirId'] ?? "300";
+                          print("repair id is $repairId");
                           Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
