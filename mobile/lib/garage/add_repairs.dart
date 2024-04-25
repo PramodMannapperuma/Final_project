@@ -19,7 +19,7 @@ class _AddRepairState extends State<AddRepair> {
   List<XFile> _vehicleImages = [];
 
   RepairData repairData = RepairData();
-
+  
   List<Step> stepList() => [
     Step(
       state: _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
