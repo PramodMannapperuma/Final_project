@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/accident/accident_detail.dart';
 import 'package:mobile/Insurence/add_accidents.dart';
 import 'package:mobile/garage/add_repairs.dart';
+import 'package:mobile/garage/check_accidents.dart';
 import 'package:mobile/garage/check_repairs.dart';
 import 'package:mobile/garage/garage_profile.dart';
 import 'package:mobile/repair/repair_details.dart';
@@ -419,7 +420,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AccidentDetails(),
+                          builder: (context) => CheckAccidents(),
                         ),
                       );
                     },
