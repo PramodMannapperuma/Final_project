@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Home.dart';
-import 'package:mobile/auth/signUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-// import '../nav/bottomNav.dart';
+import 'package:mobile/auth/signUp.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -45,13 +43,7 @@ class _LoginFormState extends State<LoginForm> {
               "welcome Back",
               style: TextStyle(fontSize: 60),
             ),
-            // Image.asset(
-            //   'assets/Images/shit.jpg',
-            //   width: 400, // Set the width of the image
-            //   height: 100, // Set the height of the image
-            // ),
-            const SizedBox(
-                height: 16), // Add some space between the image and the form
+            const SizedBox(height: 16),
             Form(
               key: _formKey,
               child: Column(
@@ -91,29 +83,31 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: _login,
+                    onPressed: () => _login(context),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor:
-                      Colors.blue, // Set the text color of the button
-                      minimumSize: const Size(double.infinity,
-                          50), // Set the minimum size of the button (width, height)
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 16), // Set the padding inside the button
+                      backgroundColor: Colors.blue,
+                      minimumSize: const Size(double.infinity, 50),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(10), // Set the border radius
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     child: const Text(
                       'Login',
-                      style: TextStyle(
-                          fontSize: 16), // Set the font size of the button text
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                   const SizedBox(height: 16),
                   GestureDetector(
-                    onTap: _login,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignupScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       "Don't have an account? Sign up",
                       style: TextStyle(
@@ -130,25 +124,66 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
-  Future<void> _login() async {
+
+  Future<void> _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        // Show loading screen
+        showDialog(
+          barrierDismissible:
+              false, // Prevents the dialog from closing until we manually do it
+          context: context,
+          builder: (BuildContext context) {
+            return const AlertDialog(
+              content: Row(
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 24),
+                  Text("Logging In ... "),
+                ],
+              ),
+            );
+          },
+        );
+
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _email,
           password: _password,
         );
-        // Login successful, navigate to the next screen
+
+        // Remove loading screen
+        Navigator.pop(context);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MyHomePage(), // Replace NextScreen() with your actual next screen widget
+            builder: (context) => const MyHomePage(),
           ),
         );
       } catch (e) {
-        // Handle login errors here
-        print('Error: $e');
-        // You can show an error message to the user if login fails
+        // Remove loading screen
+        Navigator.pop(context);
+
+        // Display error message
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Login Error'),
+              content: Text('Error: $e'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
   }
