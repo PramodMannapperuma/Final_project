@@ -26,6 +26,6 @@ jobs:
       #   run: flutter analyze
       #   working-directory: mobile_app
 
-      # - name: Run tests
-      #   run: flutter test
-      #   working-directory: mobile_app
+      - name: Run tests
+        run: flutter test
+        working-directory: mobile
