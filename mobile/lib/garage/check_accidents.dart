@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/accident/Accident_Info.dart';
+import 'package:mobile/garage/accident_data.dart';
 
 class CheckAccidents extends StatefulWidget {
   const CheckAccidents({super.key});
@@ -41,17 +42,17 @@ class _CheckAccidentsState extends State<CheckAccidents> {
     return null;
   }
 
-  List<Map<String, dynamic>> repairsList = [];
+  List<Map<String, dynamic>> accidentList = [];
 
   void searchRepairs(String vehicleNumber) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('repairs')
+          .collection('accidents')
           .where('vehicleNumber', isEqualTo: vehicleNumber)
           .get();
 
       setState(() {
-        repairsList = querySnapshot.docs
+        accidentList = querySnapshot.docs
             .map((doc) => doc.data() as Map<String, dynamic>)
             .toList();
       });
@@ -135,19 +136,19 @@ class _CheckAccidentsState extends State<CheckAccidents> {
               ),
               ListView.builder(
                 shrinkWrap: true,
-                itemCount: repairsList.length,
+                itemCount: accidentList.length,
                 itemBuilder: (context, index) {
-                  Map<String, dynamic> repairData = repairsList[index];
+                  Map<String, dynamic> accidentData = accidentList[index];
                   return Column(
                     children: [
                       GestureDetector(
                         onTap: () {
-                          String repairId = repairsList[index]['reapirId'] ?? "300";
-                          print("repair id is $repairId");
+                          String accidentId = accidentList[index]['accidentId'] ?? "300";
+                          print("accident id is $accidentId");
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AccidentInfo(),
+                              builder: (context) => AccidentData(accidentId: accidentId),
                             ),
                           );
                         },
@@ -161,7 +162,7 @@ class _CheckAccidentsState extends State<CheckAccidents> {
                                 width:
                                 40), // Add some spacing between the icon and text
                             Text(
-                              repairData['repair'] ?? 'No Description',
+                              accidentData['accident'] ?? 'No Description',
                               style: TextStyle(fontSize: 20),
                             ),
                             SizedBox(width: 40),

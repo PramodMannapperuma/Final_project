@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/accident/accident_detail.dart';
 import 'package:mobile/Insurence/add_accidents.dart';
 import 'package:mobile/garage/add_repairs.dart';
 import 'package:mobile/garage/check_accidents.dart';
 import 'package:mobile/garage/check_repairs.dart';
 import 'package:mobile/garage/garage_profile.dart';
-import 'package:mobile/repair/repair_details.dart';
 import 'package:mobile/screens/profile.dart';
 import 'package:mobile/screens/revenue_liscense.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
@@ -165,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text(
                             "Hello, ",
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 40,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
@@ -183,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return Text(
                                     "$firstName $lastName",
                                     style: TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 30,
                                       color: Colors.black,
                                     ),
                                   );
@@ -191,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return Text(
                                     "User",
                                     style: TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 30,
                                       color: Colors.black,
                                     ),
                                   );
@@ -231,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: const Row(
                       children: [
-                        Icon(Icons.receipt), // Add your desired icon here
+                        Icon(FluentIcons.news_28_filled), // Add your desired icon here
                         SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -262,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Row(
                       children: [
                         Icon(
-                            Icons.directions_car), // Add your desired icon here
+                            FluentIcons.vehicle_cab_28_filled), // Add your desired icon here
                         const SizedBox(
                           width: 10,
                         ), // Add some spacing between the icon and text
@@ -360,7 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text(
                             "Hello, ",
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 40,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
@@ -378,7 +376,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return Text(
                                     "$firstName ",
                                     style: TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 30,
                                       color: Colors.black,
                                     ),
                                   );
@@ -386,7 +384,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return Text(
                                     "User",
                                     style: TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 30,
                                       color: Colors.black,
                                     ),
                                   );
@@ -569,7 +567,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text(
                             "Hello, ",
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 40,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
@@ -587,7 +585,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return Text(
                                     "$firstName ",
                                     style: TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 30,
                                       color: Colors.black,
                                     ),
                                   );
