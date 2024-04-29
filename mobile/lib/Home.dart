@@ -6,6 +6,7 @@ import 'package:mobile/garage/check_repairs.dart';
 import 'package:mobile/garage/garage_profile.dart';
 import 'package:mobile/screens/profile.dart';
 import 'package:mobile/screens/revenue_liscense.dart';
+import 'package:mobile/screens/show_revenue.dart';
 import 'package:mobile/vehicle/vehicleScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -234,7 +235,37 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 10,
                         ), // Add some spacing between the icon and text
                         Text(
-                          "Revenue License",
+                          "Request Revenue License",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        // Image.asset(
+                        //   "assets/Images/home.jpg",
+                        //   height: 50,
+                        //   width: 50,
+                        // )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(thickness: 1),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShowRevenue(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(FluentIcons.news_28_filled), // Add your desired icon here
+                        SizedBox(
+                          width: 10,
+                        ), // Add some spacing between the icon and text
+                        Text(
+                          "Show Revenue License",
                           style: TextStyle(fontSize: 20),
                         ),
                         // Image.asset(

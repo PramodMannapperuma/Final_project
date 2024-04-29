@@ -7,6 +7,7 @@ import Landing from "./Components/Revenue/LandingPage";
 import ReqDash from "./Components/Requests/ReqDash";
 import ReDetails from "./Components/Requests/ReDetails";
 import Hellooo from "./Components/Requests/shit";
+import RevenueLiscense from "./Components/Revenue/Revenue";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/reqdash" element={<ReqDash />} />
           <Route path="/redetails/:id" element={<ReDetails />} />
           <Route path="/hellooo" element={<Hellooo />} />
+          <Route path="/revenue" element={<RevenueLiscense />} />
         </Routes>
       </Router>
     </>

@@ -1,4 +1,3 @@
-import NewRev from "./NewRev";
 import ReRev from "./ReRev";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -28,24 +27,13 @@ const ReqDash = () => {
                 label="Reneval Requests"
                 value="1"
               />
-              <Tab
-                sx={{ fontSize: "1.2rem", fontWeight: "bold" }}
-                label="New Revenue Requests"
-                value="2"
-              />
+              
             </TabList>
           </Box>
           <TabPanel value="1">
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <ReRev />
-              </Grid>
-            </Grid>
-          </TabPanel>
-          <TabPanel value="2">
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <NewRev />
               </Grid>
             </Grid>
           </TabPanel>
