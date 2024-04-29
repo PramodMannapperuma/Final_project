@@ -22,7 +22,7 @@ function App() {
           <Route path="/reqdash" element={<ReqDash />} />
           <Route path="/redetails/:id" element={<ReDetails />} />
           <Route path="/hellooo" element={<Hellooo />} />
-          <Route path="/revenue" element={<RevenueLiscense />} />
+          <Route path="/revenue/:id" element={<RevenueLiscense />} />
         </Routes>
       </Router>
     </>
