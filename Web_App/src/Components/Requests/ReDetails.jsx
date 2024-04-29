@@ -24,15 +24,15 @@ const ReDetails = () => {
         const files = [];
 
         // Use URLs directly from Firestore
-        const certificateUrl = fileIds.certificateId;
-        const ecoTestUrl = fileIds.ecoTestId;
-        const insuranceUrl = fileIds.insuranceId;
+        const certificateUrl = fileIds.certificateUrl;
+        const ecoTestUrl = fileIds.ecoTestUrl;
+        const insuranceUrl = fileIds.insuranceUrl;
 
 
         // Create file objects with URLs
-        files.push({ key: 'certificateId', url: certificateUrl, name: 'Certificate Document' });
-        files.push({ key: 'ecoTestId', url: ecoTestUrl, name: 'Eco Test Document' });
-        files.push({ key: 'insuranceId', url: insuranceUrl, name: 'Insurance Document' });
+        files.push({ key: 'certificateUrl', url: certificateUrl, name: 'Certificate Document' });
+        files.push({ key: 'ecoTestUrl', url: ecoTestUrl, name: 'Eco Test Document' });
+        files.push({ key: 'insuranceUrl', url: insuranceUrl, name: 'Insurance Document' });
 
         const vehicleData = fileIds.vehicleData;
         const vehicleDetails = {
@@ -115,6 +115,13 @@ const ReDetails = () => {
               <Typography>Fuel Type: {vehicleDetails.fuelType}</Typography>
 
             </div>
+            <div>
+      {/* Your ReDetails component UI */}
+      <Link to={`/revenue/${id}`}>
+        Generate License
+      </Link>
+    </div>
+                      <br></br>
   
           {/* Link back to List */}
           <Link to="/reqdash">Back to List</Link>
