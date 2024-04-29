@@ -1,0 +1,81 @@
+.revenue-license-container {
+  background: rgb(233, 129, 183);
+  max-width: 600px;
+  margin: auto;
+  padding: 10px;
+  border-radius: 2000px;
+  border: 1px solid #eee;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+  align-items: center;
+  display: flex; /* Using Flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center;
+  position: relative;
+}
+
+.revenue-license-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+.revenue-license-number,
+.revenue-license-date {
+  text-align: center;
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+.revenue-license-section {
+  margin-bottom: 0px;
+  padding: 10px;
+  /* border: 1px solid #eee; */
+  width: 100%;
+  box-sizing: border-box; /* Include padding in the width calculation */
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%) rotate(-45deg); /* Adjust to center the watermark and rotate */
+  font-size: 4em; /* Size of the watermark text */
+  color: rgba(200, 200, 200, 0.5); /* Light grey color with opacity */
+  z-index: 1; /* Ensure it's above the background but below the content */
+  pointer-events: none; /* Allows clicks to pass through to elements underneath */
+  user-select: none; /* Prevents text selection */
+  white-space: nowrap; /* Prevents the text from wrapping */
+}
+
+.revenue-license-section h2 {
+  margin-bottom: 0px;
+}
+.details-row {
+  display: flex;
+  justify-content: space-between; /* Adjust this as needed for your design */
+  margin-bottom: 0px;
+}
+
+.owner-details,
+.vehicle-details {
+  flex: 1; /* Each will take up half the width of the details-row */
+  padding: 1px; /* Adjust padding as needed */
+  margin: 0 50px; /* Gives space between the two sections */
+}
+
+/* Add media query for responsiveness if necessary */
+@media (max-width: 768px) {
+  .details-row {
+    flex-direction: column;
+  }
+
+  .owner-details,
+  .vehicle-details {
+    margin: 5px 0; /* Adjust margins for stacked layout on smaller screens */
+  }
+}

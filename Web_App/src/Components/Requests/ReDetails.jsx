@@ -1,37 +1,45 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import {
-  Paper,
-  Typography,
-  Table,
-  TableContainer,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-} from "@mui/material";
+import { Paper, Typography, Table, TableContainer, TableBody, TableRow, TableCell, Button, CircularProgress } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-
-const data = [
-  { id: 1, EcoTest: "Eco.pdf", Name: "Jon", Insurence: "Insurense.pdf", OldRevenueLicense: "rev.pdf" },
-  { id: 2, EcoTest: "Green.pdf", Name: "Alice", Insurence: "Coverage.pdf", OldRevenueLicense: "renewal.pdf" },
-  
-  // Add more sample data as needed
-];
+import { firestore } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const ReDetails = () => {
   const { id } = useParams();
   const [rowData, setRowData] = useState(null);
+  const [fileData, setFileData] = useState([]);
+  const [loading, setLoading] = useState(true);  // State to handle loading indicator
 
   useEffect(() => {
-    // Find the item with the matching ID
-    const item = data.find((item) => item.id === parseInt(id));
-    if (item) {
-      setRowData(item);
-    } else {
-      // Handle the case where the item with the specified ID is not found
-      console.log(`Item with ID ${id} not found`);
-    }
+    const fetchData = async () => {
+      setLoading(true);  // Start loading
+      const docRef = doc(firestore, "fileIds", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setRowData(docSnap.data());
+        const fileIds = docSnap.data(); // Contains { certificateId, ecoTestId, insuranceId }
+        const files = [];
+
+        // Use URLs directly from Firestore
+        const certificateUrl = fileIds.certificateId;
+        const ecoTestUrl = fileIds.ecoTestId;
+        const insuranceUrl = fileIds.insuranceId;
+
+        // Create file objects with URLs
+        files.push({ key: 'certificateId', url: certificateUrl, name: 'Certificate Document' });
+        files.push({ key: 'ecoTestId', url: ecoTestUrl, name: 'Eco Test Document' });
+        files.push({ key: 'insuranceId', url: insuranceUrl, name: 'Insurance Document' });
+
+        setFileData(files);
+      } else {
+        console.log("No such document!");
+      }
+      setLoading(false);  // Stop loading
+    };
+
+    fetchData();
   }, [id]);
 
   return (
@@ -45,94 +53,38 @@ const ReDetails = () => {
       }}
     >
       <Typography variant="h5" gutterBottom>
-        Detail Page
+        Detail Page for ID: {id}
       </Typography>
-      {rowData ? (
+      {loading ? (
+        <CircularProgress style={{ display: 'block', margin: '20px auto' }} />
+      ) : fileData.length > 0 ? (
         <TableContainer>
           <Table>
             <TableBody>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>{rowData.id}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>{rowData.Name}</TableCell>
-               
-              </TableRow>
-              <TableRow>
-                <TableCell>Eco Test</TableCell>
-                <TableCell>{rowData.EcoTest}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CheckIcon />}
-                    // onClick={handleCheckClick}
-                  >
-                    <Link
-                      style={{ textDecoration: "none", color: "inherit" }}
+              {fileData.map((file, index) => (
+                <TableRow key={index}>
+                  <TableCell>{file.key.charAt(0).toUpperCase() + file.key.slice(1)}</TableCell>
+                  <TableCell>{file.name}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<CheckIcon />}
                       onClick={(e) => {
-                        e.preventDefault(); // Prevent the default behavior of the link
-                        window.open("/hellooo", "_blank"); // Open the link in a new tab
+                        e.preventDefault();
+                        window.open(file.url, "_blank");
                       }}
                     >
                       Check
-                    </Link>
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Insurence</TableCell>
-                <TableCell>{rowData.Insurence}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CheckIcon />}
-                    // onClick={handleCheckClick}
-                  >
-                    <Link
-                      style={{ textDecoration: "none", color: "inherit" }}
-                      onClick={(e) => {
-                        e.preventDefault(); // Prevent the default behavior of the link
-                        window.open("/hellooo", "_blank"); // Open the link in a new tab
-                      }}
-                    >
-                    
-                      Check
-                    </Link>
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Old Revenue License</TableCell>
-                <TableCell>{rowData.OldRevenueLicense}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CheckIcon />}
-                    // onClick={handleCheckClick}
-                  >
-                    <Link
-                      style={{ textDecoration: "none", color: "inherit" }}
-                      onClick={(e) => {
-                        e.preventDefault(); // Prevent the default behavior of the link
-                        window.open("/hellooo", "_blank"); // Open the link in a new tab
-                      }}
-                    >
-                    
-                      Check
-                    </Link>
-                  </Button>
-                </TableCell>
-              </TableRow>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       ) : (
-        <p>Loading...</p>
+        <p>No files available.</p>
       )}
       <Link to="/reqdash">Back to List</Link>
     </Paper>

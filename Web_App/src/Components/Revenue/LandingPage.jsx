@@ -65,7 +65,7 @@ const Landing = () => {
       urls.push(downloadURL);
     }
 
-    return id;
+    return urls;
   };
 
   const generateId = () => {
