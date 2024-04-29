@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,6 +25,22 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
   PlatformFile? _ecoTestFile;
   PlatformFile? _certificateFile;
   bool _uploading = false; // Added to track uploading state
+
+  Future<Map<String, dynamic>?> getVehicleData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.email != null) {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('vehicles')
+          .where('userEmail', isEqualTo: user.email)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first.data(); // Assuming this contains all necessary vehicle data
+      }
+    }
+    return null; // No vehicle data or user not logged in
+  }
 
   Future<void> _openFilePicker(String fileType) async {
     try {
@@ -96,8 +113,27 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
         );
         _certificateUrl = await (await certificateUploadTask).ref.getDownloadURL();
 
-        // Save URLs to Firestore
-        await saveUrlsToFirestore(_insuranceUrl!, _ecoTestUrl!, _certificateUrl!, id);
+        // Save URLs to Firestore and get collection ID
+        String collectionId = await saveUrlsToFirestore(_insuranceUrl!, _ecoTestUrl!, _certificateUrl!, id);
+
+        // Show collection ID
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Reference Number'),
+              content: Text('Your files are uploaded. Collection ID: $collectionId'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
 
         // Clear file names and files
         setState(() {
@@ -120,17 +156,33 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
     }
   }
 
-  Future<void> saveUrlsToFirestore(String insuranceUrl, String ecoTestUrl, String certificateUrl, String id) async {
+  Future<String> saveUrlsToFirestore(String insuranceUrl, String ecoTestUrl, String certificateUrl, String id) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore.collection('fileIds').doc(id).set({
-        'insuranceUrl': insuranceUrl,
-        'ecoTestUrl': ecoTestUrl,
-        'certificateUrl': certificateUrl,
-      });
-      print("File URLs uploaded successfully!");
+      DocumentReference docRef = await firestore.collection('fileIds').doc(id);
+
+      // Get vehicle data
+      Map<String, dynamic>? vehicleData = await getVehicleData();
+
+      if (vehicleData != null) {
+        // Merge vehicle data with URLs
+        Map<String, dynamic> data = {
+          'insuranceUrl': insuranceUrl,
+          'ecoTestUrl': ecoTestUrl,
+          'certificateUrl': certificateUrl,
+          'vehicleData': vehicleData, // Add vehicle data here
+        };
+
+        await docRef.set(data);
+        print("File URLs and vehicle data uploaded successfully!");
+      } else {
+        print("Error: No vehicle data found.");
+      }
+
+      return docRef.id; // Return the collection ID
     } catch (error) {
-      print("Error uploading file URLs: $error");
+      print("Error uploading file URLs and vehicle data: $error");
+      return ''; // Return empty string on error
     }
   }
 
