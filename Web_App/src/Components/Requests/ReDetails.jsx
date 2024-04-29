@@ -9,6 +9,7 @@ const ReDetails = () => {
   const { id } = useParams();
   const [rowData, setRowData] = useState(null);
   const [fileData, setFileData] = useState([]);
+  const [vehicleDetails, setVehicleDetails] = useState();
   const [loading, setLoading] = useState(true);  // State to handle loading indicator
 
   useEffect(() => {
@@ -27,10 +28,27 @@ const ReDetails = () => {
         const ecoTestUrl = fileIds.ecoTestId;
         const insuranceUrl = fileIds.insuranceId;
 
+
         // Create file objects with URLs
         files.push({ key: 'certificateId', url: certificateUrl, name: 'Certificate Document' });
         files.push({ key: 'ecoTestId', url: ecoTestUrl, name: 'Eco Test Document' });
         files.push({ key: 'insuranceId', url: insuranceUrl, name: 'Insurance Document' });
+
+        const vehicleData = fileIds.vehicleData;
+        const vehicleDetails = {
+          make: vehicleData.make,
+          model: vehicleData.model,
+          year: vehicleData.year,
+          engineType: vehicleData.engineType,
+          horsePower: vehicleData.horsePower,
+          licensePlateNumber: vehicleData.licensePlateNumber,
+          color: vehicleData.color,
+          vin: vehicleData.vin,
+          fuelType: vehicleData.fuelType,
+          // Add more vehicle details as needed
+        };
+        console.log(vehicleDetails);
+        setVehicleDetails(vehicleDetails);
 
         setFileData(files);
       } else {
@@ -57,36 +75,51 @@ const ReDetails = () => {
       </Typography>
       {loading ? (
         <CircularProgress style={{ display: 'block', margin: '20px auto' }} />
-      ) : fileData.length > 0 ? (
-        <TableContainer>
-          <Table>
-            <TableBody>
-              {fileData.map((file, index) => (
-                <TableRow key={index}>
-                  <TableCell>{file.key.charAt(0).toUpperCase() + file.key.slice(1)}</TableCell>
-                  <TableCell>{file.name}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      startIcon={<CheckIcon />}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        window.open(file.url, "_blank");
-                      }}
-                    >
-                      Check
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
       ) : (
-        <p>No files available.</p>
+        <>
+          <TableContainer>
+            <Table>
+              <TableBody>
+                {fileData.map((file, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{file.key.charAt(0).toUpperCase() + file.key.slice(1)}</TableCell>
+                    <TableCell>{file.name}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<CheckIcon />}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.open(file.url, "_blank");
+                        }}
+                      >
+                        Check
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div>
+              <Typography variant="h6">Vehicle Details</Typography>
+              <Typography>Make: {vehicleDetails.make}</Typography>
+              <Typography>Model: {vehicleDetails.model}</Typography>
+              <Typography>Year: {vehicleDetails.year}</Typography>
+              <Typography>Engine Type: {vehicleDetails.engineType}</Typography>
+              <Typography>Horse Power: {vehicleDetails.horsePower}</Typography>
+              <Typography>License Plate Number: {vehicleDetails.licensePlateNumber}</Typography>
+              <Typography>Color: {vehicleDetails.color}</Typography>
+              <Typography>VIN: {vehicleDetails.vin}</Typography>
+              <Typography>Fuel Type: {vehicleDetails.fuelType}</Typography>
+
+            </div>
+  
+          {/* Link back to List */}
+          <Link to="/reqdash">Back to List</Link>
+        </>
       )}
-      <Link to="/reqdash">Back to List</Link>
     </Paper>
   );
 };
