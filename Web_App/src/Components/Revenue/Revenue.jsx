@@ -62,7 +62,7 @@ const RevenueLiscense = () => {
     try {
       console.log("Saving license...");
       const licenseDocRef = doc(firestore, "licenses", id);
-      await setDoc(licenseDocRef, { licenseNumber, id, vehicleDetails });
+      await setDoc(licenseDocRef, { licenseNumber, id, vehicleDetails,formattedDate });
 
       // Delete collection from fileIds
       const fileDocRef = doc(firestore, "fileIds", id);

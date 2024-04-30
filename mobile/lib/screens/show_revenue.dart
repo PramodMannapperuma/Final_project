@@ -11,46 +11,75 @@ class ShowRevenue extends StatefulWidget {
 }
 
 class _ShowRevenueState extends State<ShowRevenue> {
-  String licenseNumber = 'XYZ-123456'; // Replace with actual license number
-  DateTime issueDate = DateTime.now(); // Replace with actual issue date
-  double zoomScale = 1.0;
-
-  Future<void> fetchLicenseData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null && user.email != null) {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
-          .collection('licenses')
-          .where('userEmail', isEqualTo: user.email)
-          .limit(1)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        Map<String, dynamic> licenseData = snapshot.docs.first.data();
-        setState(() {
-          licenseNumber = licenseData['licenseNumber'] ?? 'XYZ-123456';
-          issueDate = licenseData['issueDate']?.toDate() ?? DateTime.now();
-        });
-      }
-    }
-  }
+  late String licenseNumber = 'Loading...';
+  late String formattedDate = 'Loading...';
+  late String collectionId = 'Loading...';
+  Map<String, dynamic> vehicleDetails = {};
+  late double zoomScale;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchLicenseData();
+    zoomScale = 1.0;
+  }
+
+  Future<void> fetchLicenseData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.email != null) {
+        var vehicleSnapshot = await FirebaseFirestore.instance
+            .collection('vehicles')
+            .where('userEmail', isEqualTo: user.email)
+            .limit(1)
+            .get();
+
+        if (vehicleSnapshot.docs.isNotEmpty) {
+          var vehicleData = vehicleSnapshot.docs.first.data();
+          setState(() {
+            collectionId = vehicleData['collectionId'] ?? 'Not Available';
+          });
+
+          var licenseSnapshot = await FirebaseFirestore.instance
+              .collection('licenses')
+              .doc(collectionId)
+              .get();
+
+          if (licenseSnapshot.exists) {
+            var licenseData = licenseSnapshot.data();
+            setState(() {
+              licenseNumber = licenseData?['licenseNumber'] ?? 'Not Available';
+              vehicleDetails = licenseData?['vehicleDetails'] ?? {};
+              formattedDate =
+                  DateFormat('yyyy-MM-dd').format(DateTime.now());
+              isLoading = false; // Data fetched, set loading to false
+            });
+          } else {
+            print('License document not found');
+          }
+        } else {
+          print('No vehicle data found for user');
+        }
+      } else {
+        print('User not logged in or email not available');
+      }
+    } catch (error) {
+      print('Error fetching data: $error');
+      // Handle error (e.g., show error message)
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(issueDate);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Revenue License'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator()) // Show loading indicator
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(5),
         child: Center(
           child: GestureDetector(
@@ -74,22 +103,106 @@ class _ShowRevenueState extends State<ShowRevenue> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Revenue License',style: TextStyle(fontSize: 30),),
+                    Text('Revenue License', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30)),
                     Text(
                       'License No: $licenseNumber',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 5),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('Issue Date: ${vehicleDetails[''] ?? 'N/A' }'),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Issue Date: $formattedDate'),
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 0),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ' $collectionId',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 0),
+                    // Add other license details here based on fetched data
+                    SizedBox(height: 5),
+                    Text(
+                      'Class of Vehicle, Fuel Type, and Vehicle No:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      '${vehicleDetails['make'] ?? 'N/A'}/${vehicleDetails['fuelType']}/${vehicleDetails['licensePlateNumber']}',
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      'Owner Information',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 2),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Issue Date: $formattedDate'),
-                        Text('Expiration : 2025-04-29')
+                        Text('HP: ${vehicleDetails['horsePower']}'),
+                        Text('LPN: ${vehicleDetails['licensePlateNumber']}'),
+                        Text('VIN: ${vehicleDetails['vin']}'),
                       ],
                     ),
                     SizedBox(height: 5),
-                    // Add other license details here based on fetched data
+                    Text(
+                      'Vehicle Information',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Make: ${vehicleDetails['make']}'),
+                        Text('Model: ${vehicleDetails['model']}'),
+                      ],
+                    ),
+                    Text(
+                      'Fee Information',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Make: ${vehicleDetails['make']}'),
+                        Text('Model: ${vehicleDetails['model']}'),
+                      ],
+                    ),
+
                   ],
                 ),
               ),
