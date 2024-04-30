@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { firestore } from "../../firebase";
 import { doc, getDoc, setDoc, deleteDoc, } from "firebase/firestore";
-import { Email } from "@mui/icons-material";
-
 
 const RevenueLiscense = () => {
 
