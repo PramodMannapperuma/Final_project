@@ -2,7 +2,7 @@ import "./Revenue.css";
 import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { firestore } from "../../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc, } from "firebase/firestore";
 
 const RevenueLiscense = () => {
 
@@ -11,6 +11,7 @@ const RevenueLiscense = () => {
   const [fileData, setFileData] = useState([]);
   const [vehicleDetails, setVehicleDetails] = useState();
   const [loading, setLoading] = useState(true);
+  const [licenseNumber, setLicenseNumber] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +35,7 @@ const RevenueLiscense = () => {
           color: vehicleData.color,
           vin: vehicleData.vin,
           fuelType: vehicleData.fuelType,
+          userEmail: vehicleData.userEmail
           // Add more vehicle details as needed
         };
         setVehicleDetails(vehicleDetails);
@@ -48,38 +50,52 @@ const RevenueLiscense = () => {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    if (vehicleDetails) {
+      // Generate a random number between 100000 and 999999
+      const randomNumber = Math.floor(Math.random() * 900000) + 100000;
+      setLicenseNumber(`XYZ-${randomNumber}`);
+    }
+  }, [vehicleDetails]);
 
-  const documentData = {
-    title: "Vehicle Revenue License",
-    number: "License No: XYZ-123456",
-    date: "Issue Date: 2024-02-15",
-    details: "Class of Vehicle,Fuel Type and Vehicle No.",
-    data: "MOTOR CAR/PETROL/KB-2705",
-    ownerInfo: {
-      name: "Owner : John Doe",
-      address: "Address: 123, Hometown, Country",
-    },
-    vehicleInfo: {
-      type: "Vehicle: Car/Petrol",
-      model: "Model: ABC-Model",
-      weight: "Weight: 1430 kg",
-    },
-    feesInfo: {
-      annualFee: "Annual Fee: $100.00",
-      arrears: "Arrears: $20.00",
-      fines: "Fines: $5.00",
-    },
-    // ... additional content
+  const handleSaveLicense = async () => {
+    try {
+      console.log("Saving license...");
+      const licenseDocRef = doc(firestore, "licenses", id);
+      await setDoc(licenseDocRef, { licenseNumber, id, vehicleDetails,formattedDate });
+
+      // Delete collection from fileIds
+      const fileDocRef = doc(firestore, "fileIds", id);
+      await deleteDoc(fileDocRef);
+      
+
+      console.log("License and vehicle details saved successfully, and fileIds document deleted!");
+    } catch (error) {
+      console.error("Error saving license and vehicle details:", error);
+    }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  const currentDate = new Date(); // Get current date and time
+const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+
 
   return (
     <div className="revenue-license-container">
       <div className="watermark">Confidential</div>
-      <h1 className="revenue-license-title">{documentData.title}</h1>
-      <p className="revenue-license-detail">{documentData.number}</p>
-      <p className="revenue-license-detail">{documentData.date}</p>
-      <p className="revenue-license-detail">{documentData.details}</p>
-      <p className="revenue-license-detail">{documentData.data}</p>
+      <h1 className="revenue-license-title">Vehicle Revenue License</h1>
+      <p className="revenue-license-detail">License No: XYZ-123456</p>
+      <p className="revenue-license-detail">Issue Date: {formattedDate}</p>
+      <p className="revenue-license-detail">Class of Vehicle,Fuel Type and Vehicle No.</p>
+      {vehicleDetails ? (
+            <>
+              <p>{vehicleDetails.make}/{vehicleDetails.fuelType}/{vehicleDetails.licensePlateNumber}</p>
+            </>
+          ) : (
+            <p>Vehicle details not available.</p>
+          )}
 
       <div className="details-row">
         <div className="owner-details">
@@ -88,7 +104,6 @@ const RevenueLiscense = () => {
             <>
               <p>Horse Power: {vehicleDetails.horsePower}</p>
               <p>License Plate Number: {vehicleDetails.licensePlateNumber}</p>
-              <p>Color: {vehicleDetails.color}</p>
               <p>VIN: {vehicleDetails.vin}</p>
               <p>Fuel Type: {vehicleDetails.fuelType}</p>
               
@@ -106,6 +121,7 @@ const RevenueLiscense = () => {
               <p>Model: {vehicleDetails.model}</p>
               <p>Year: {vehicleDetails.year}</p>
               <p>Engine Type: {vehicleDetails.engineType}</p>
+              <p>Email {vehicleDetails.userEmail}</p>
               
             </>
           ) : (
@@ -114,13 +130,14 @@ const RevenueLiscense = () => {
         </div>
       </div>
 
-      <div className="fees-details">
+      {/* <div className="fees-details">
         <h5>Fees Information</h5>
         <p>{documentData.feesInfo.annualFee}</p>
         <p>{documentData.feesInfo.arrears}</p>
         <p>{documentData.feesInfo.fines}</p>
-      </div>
+      </div> */}
       {/* ...additional sections as needed */}
+      <button onClick={handleSaveLicense}>Save License</button>
     </div>
   );
 };
