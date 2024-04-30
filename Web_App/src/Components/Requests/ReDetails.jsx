@@ -45,6 +45,7 @@ const ReDetails = () => {
           color: vehicleData.color,
           vin: vehicleData.vin,
           fuelType: vehicleData.fuelType,
+          email: vehicleData.email
           // Add more vehicle details as needed
         };
         console.log(vehicleDetails);
