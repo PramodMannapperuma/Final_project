@@ -51,8 +51,7 @@ class _ShowRevenueState extends State<ShowRevenue> {
             setState(() {
               licenseNumber = licenseData?['licenseNumber'] ?? 'Not Available';
               vehicleDetails = licenseData?['vehicleDetails'] ?? {};
-              formattedDate =
-                  DateFormat('yyyy-MM-dd').format(DateTime.now());
+              formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
               isLoading = false; // Data fetched, set loading to false
             });
           } else {
@@ -80,137 +79,143 @@ class _ShowRevenueState extends State<ShowRevenue> {
       body: isLoading
           ? Center(child: CircularProgressIndicator()) // Show loading indicator
           : SingleChildScrollView(
-        padding: const EdgeInsets.all(5),
-        child: Center(
-          child: GestureDetector(
-            onScaleUpdate: (ScaleUpdateDetails details) {
-              setState(() {
-                zoomScale = details.scale;
-              });
-            },
-            child: Transform.scale(
-              scale: zoomScale,
-              child: Container(
-                width: 550, // Adjust width as needed
-                height: 700, // Adjust height as needed
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black),
-                  color: Colors.purpleAccent, // Change color as needed
-                ),
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('Revenue License', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30)),
-                    Text(
-                      'License No: $licenseNumber',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Issue Date: ${vehicleDetails[''] ?? 'N/A' }'),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Issue Date: $formattedDate'),
-                              ],
-                            )
-                          ],
-                          
-                        ),
-                        SizedBox(height: 0),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  ' $collectionId',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+              padding: const EdgeInsets.all(5),
+              child: Center(
+                child: GestureDetector(
+                  onScaleUpdate: (ScaleUpdateDetails details) {
+                    setState(() {
+                      zoomScale = details.scale;
+                    });
+                  },
+                  child: Transform.scale(
+                    scale: zoomScale,
+                    child: Container(
+                      width: 550, // Adjust width as needed
+                      height: 700, // Adjust height as needed
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black),
+                        color: Colors.purpleAccent, // Change color as needed
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Revenue License',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 30)),
+                          Text(
+                            'License No: $licenseNumber',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                          'Issue Date: ${vehicleDetails[''] ?? 'N/A'}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Issue Date: $formattedDate'),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 0),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ' $collectionId',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
 
-                    SizedBox(height: 0),
-                    // Add other license details here based on fetched data
-                    SizedBox(height: 5),
-                    Text(
-                      'Class of Vehicle, Fuel Type, and Vehicle No:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                          SizedBox(height: 0),
+                          // Add other license details here based on fetched data
+                          SizedBox(height: 5),
+                          Text(
+                            'Class of Vehicle, Fuel Type, and Vehicle No:',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            '${vehicleDetails['make'] ?? 'N/A'}/${vehicleDetails['fuelType']}/${vehicleDetails['licensePlateNumber']}',
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Owner Information',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 2),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('HP: ${vehicleDetails['horsePower']}'),
+                              Text(
+                                  'LPN: ${vehicleDetails['licensePlateNumber']}'),
+                              Text('VIN: ${vehicleDetails['vin']}'),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Vehicle Information',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 2),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('Make: ${vehicleDetails['make']}'),
+                              Text('Model: ${vehicleDetails['model']}'),
+                            ],
+                          ),
+                          Text(
+                            'Fee Information',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 2),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('Make: ${vehicleDetails['make']}'),
+                              Text('Model: ${vehicleDetails['model']}'),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 2),
-                    Text(
-                      '${vehicleDetails['make'] ?? 'N/A'}/${vehicleDetails['fuelType']}/${vehicleDetails['licensePlateNumber']}',
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Owner Information',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('HP: ${vehicleDetails['horsePower']}'),
-                        Text('LPN: ${vehicleDetails['licensePlateNumber']}'),
-                        Text('VIN: ${vehicleDetails['vin']}'),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Vehicle Information',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('Make: ${vehicleDetails['make']}'),
-                        Text('Model: ${vehicleDetails['model']}'),
-                      ],
-                    ),
-                    Text(
-                      'Fee Information',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('Make: ${vehicleDetails['make']}'),
-                        Text('Model: ${vehicleDetails['model']}'),
-                      ],
-                    ),
-
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
