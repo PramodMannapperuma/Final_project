@@ -1,5 +1,6 @@
 
-# Vehicle Repair and Accident Management System MotoManager Hub (Mobile App)
+# Personal Vehicle Assistant - MotoManager Hub 
+# (Mobile App using Flutter) (Web App using React) (Firebase DB)
 
 ## Description
 
