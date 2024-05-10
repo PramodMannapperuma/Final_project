@@ -150,6 +150,7 @@ class _RepairDetailsState extends State<RepairDetails> {
                             ),
                           ],
                         ),
+                        
                         SizedBox(
                           height: 30,
                           width: MediaQuery.of(context).size.width / 1.1,
