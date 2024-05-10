@@ -31,7 +31,7 @@ class _AddRepairState extends State<AddRepair> {
             initialValue: repairData.vehicleNumber,
             decoration: InputDecoration(
                 labelText: 'Vehicle Number'),
-            onChanged: (value) => setState(() => repairData.vehicleNumber = value ?? "na"),
+            onChanged: (value) => setState(() => repairData.vehicleNumber = value),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter the Number';
@@ -61,6 +61,19 @@ class _AddRepairState extends State<AddRepair> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter the Location';
+              }
+              return null; // indicates the input is correct
+            },
+          ),
+          TextFormField(
+            initialValue: repairData.miles,
+            decoration: const InputDecoration(
+              labelText: 'Miles on vehicle',
+            ),
+            onChanged: (value) => setState(() => repairData.miles = value),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the Miles';
               }
               return null; // indicates the input is correct
             },
@@ -173,6 +186,7 @@ class _AddRepairState extends State<AddRepair> {
         'vehicleNumber': repairData.vehicleNumber,
         'repair': repairData.repair,
         'location': repairData.location,
+        'miles':repairData.miles,
         'description': repairData.description,
         'date&time': DateTime.now(),
         'imageUrls': imageUrls, // Store image URLs in Firestore
@@ -253,6 +267,7 @@ class RepairData {
   String vehicleNumber;
   String repair;
   String location;
+  String miles;
   String description;
 
 
@@ -262,6 +277,7 @@ class RepairData {
     this.vehicleNumber = '',
     this.repair = '',
     this.location = '',
+    this.miles = '',
     this.description = '',
   });
 }

@@ -72,7 +72,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
         children: <Widget>[
           _buildImageWidget(),
           const SizedBox(height: 10),
-          const Text("Shelby GT500", style: TextStyle(fontSize: 24)),
+          const Text("", style: TextStyle(fontSize: 24)),
           const SizedBox(height: 20),
           const Divider(thickness: 1),
           ..._buildProfileMenuWidgets(),
