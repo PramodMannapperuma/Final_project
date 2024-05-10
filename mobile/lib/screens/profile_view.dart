@@ -119,12 +119,7 @@ class _ProfileState extends State<ProfileDetails> {
                   ProfileDetailColumn(
                       title: 'Contact Number',
                       value: '${userData['email'] ?? 'N/A'}'),
-                  ProfileDetailColumn(
-                      title: 'Name of Mother/Father/Guardian',
-                      value: '${userData['email'] ?? 'N/A'}'),
-                  ProfileDetailColumn(
-                      title: 'Contact Number',
-                      value: '${userData['email'] ?? 'N/A'}'),
+
                 ],
               );
             } else {

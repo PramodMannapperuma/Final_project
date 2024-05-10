@@ -3,6 +3,7 @@ import 'package:mobile/Home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobile/auth/signUp.dart';
 
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -152,6 +153,12 @@ class _LoginFormState extends State<LoginForm> {
           email: _email,
           password: _password,
         );
+
+        // // Get the UID of the signed-in user
+        // String userId = userCredential.user?.email ?? '';
+        //
+        // // Save the user ID in SharedPreferences
+        // await saveUserId(userId);
 
         // Remove loading screen
         Navigator.pop(context);

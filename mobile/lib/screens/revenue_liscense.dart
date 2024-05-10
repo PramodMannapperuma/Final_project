@@ -24,7 +24,7 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
   PlatformFile? _insuranceFile;
   PlatformFile? _ecoTestFile;
   PlatformFile? _certificateFile;
-  bool _uploading = false; // Added to track uploading state
+  bool _uploading = false;
 
   Future<Map<String, dynamic>?> getVehicleData() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -36,11 +36,10 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        return snapshot.docs.first
-            .data(); // Assuming this contains all necessary vehicle data
+        return snapshot.docs.first.data();
       }
     }
-    return null; // No vehicle data or user not logged in
+    return null;
   }
 
   Future<void> _openFilePicker(String fileType) async {
@@ -84,88 +83,131 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
   }
 
   Future<void> _uploadFiles() async {
-    if (_insuranceFile != null &&
-        _ecoTestFile != null &&
-        _certificateFile != null) {
+    // Check for missing files
+    String missingFilesMessage = '';
+    if (_insuranceFile == null) missingFilesMessage += '- Insurance File\n';
+    if (_ecoTestFile == null) missingFilesMessage += '- Eco Test File\n';
+    if (_certificateFile == null) missingFilesMessage += '- Certificate File\n';
+
+    // If any file is missing, show an alert dialog
+    if (missingFilesMessage.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Missing Files'),
+            content: Text(
+                'Please select all files to upload:\n$missingFilesMessage'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // Proceed with file upload if all files are selected
+    setState(() {
+      _uploading = true; // Start uploading, show loading screen
+    });
+
+    try {
+      firebase_storage.FirebaseStorage storage =
+          firebase_storage.FirebaseStorage.instance;
+
+      String id = generateId();
+      // Upload insurance file
+      firebase_storage.Reference insuranceRef =
+          storage.ref('documents/$id/$_insuranceFileName');
+      firebase_storage.UploadTask insuranceUploadTask = insuranceRef.putFile(
+        File(_insuranceFile!.path!),
+      );
+      _insuranceUrl = await (await insuranceUploadTask).ref.getDownloadURL();
+
+      // Upload ecoTest file
+      firebase_storage.Reference ecoTestRef =
+          storage.ref('documents/$id/$_ecoTestFileName');
+      firebase_storage.UploadTask ecoTestUploadTask = ecoTestRef.putFile(
+        File(_ecoTestFile!.path!),
+      );
+      _ecoTestUrl = await (await ecoTestUploadTask).ref.getDownloadURL();
+
+      // Upload certificate file
+      firebase_storage.Reference certificateRef =
+          storage.ref('documents/$id/$_certificateFileName');
+      firebase_storage.UploadTask certificateUploadTask =
+          certificateRef.putFile(
+        File(_certificateFile!.path!),
+      );
+      _certificateUrl =
+          await (await certificateUploadTask).ref.getDownloadURL();
+
+      // Save URLs to Firestore and get collection ID
+      String collectionId = await saveUrlsToFirestore(
+          _insuranceUrl!, _ecoTestUrl!, _certificateUrl!, id);
+      await saveUrlsToVehicles(
+          collectionId, _insuranceUrl!, _ecoTestUrl!, _certificateUrl!);
+
+      // Show collection ID
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Reference Number'),
+            content:
+                Text('Your files are uploaded. Collection ID: $collectionId'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+
+      // Clear file names and files
       setState(() {
-        _uploading = true; // Start uploading, show loading screen
+        _insuranceFileName = null;
+        _ecoTestFileName = null;
+        _certificateFileName = null;
+        _insuranceFile = null;
+        _ecoTestFile = null;
+        _certificateFile = null;
+        _uploading = false; // Stop uploading, hide loading screen
       });
-
-      try {
-        firebase_storage.FirebaseStorage storage =
-            firebase_storage.FirebaseStorage.instance;
-
-        String id = generateId();
-        // Upload insurance file
-        firebase_storage.Reference insuranceRef =
-            storage.ref('documents/$id/$_insuranceFileName');
-        firebase_storage.UploadTask insuranceUploadTask = insuranceRef.putFile(
-          File(_insuranceFile!.path!),
-        );
-        _insuranceUrl = await (await insuranceUploadTask).ref.getDownloadURL();
-
-        // Upload ecoTest file
-        firebase_storage.Reference ecoTestRef =
-            storage.ref('documents/$id/$_ecoTestFileName');
-        firebase_storage.UploadTask ecoTestUploadTask = ecoTestRef.putFile(
-          File(_ecoTestFile!.path!),
-        );
-        _ecoTestUrl = await (await ecoTestUploadTask).ref.getDownloadURL();
-
-        // Upload certificate file
-        firebase_storage.Reference certificateRef =
-            storage.ref('documents/$id/$_certificateFileName');
-        firebase_storage.UploadTask certificateUploadTask =
-            certificateRef.putFile(
-          File(_certificateFile!.path!),
-        );
-        _certificateUrl =
-            await (await certificateUploadTask).ref.getDownloadURL();
-
-        // Save URLs to Firestore and get collection ID
-        String collectionId = await saveUrlsToFirestore(
-            _insuranceUrl!, _ecoTestUrl!, _certificateUrl!, id);
-        await saveUrlsToVehicles(
-            collectionId, _insuranceUrl!, _ecoTestUrl!, _certificateUrl!);
-
-        // Show collection ID
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Reference Number'),
-              content:
-                  Text('Your files are uploaded. Collection ID: $collectionId'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-
-        // Clear file names and files
-        setState(() {
-          _insuranceFileName = null;
-          _ecoTestFileName = null;
-          _certificateFileName = null;
-          _insuranceFile = null;
-          _ecoTestFile = null;
-          _certificateFile = null;
-          _uploading = false; // Stop uploading, hide loading screen
-        });
-      } catch (e) {
-        print("Error uploading files: $e");
-        setState(() {
-          _uploading = false; // Stop uploading, hide loading screen on error
-        });
-      }
-    } else {
-      print('Please select all files to upload.');
+    } catch (e) {
+      // Display error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Upload Error'),
+            content: Text(
+                'An error occurred while uploading your files. Please try again.\nError: $e'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      print("Error uploading files: $e");
+      setState(() {
+        _uploading = false; // Stop uploading, hide loading screen on error
+      });
     }
   }
 
@@ -182,9 +224,11 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
             .get();
 
         if (snapshot.docs.isNotEmpty) {
-          DocumentSnapshot<Map<String, dynamic>> docSnapshot = snapshot.docs.first;
+          DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+              snapshot.docs.first;
           String docId = docSnapshot.id;
-          DocumentReference docRef = firestore.collection('vehicles').doc(docId);
+          DocumentReference docRef =
+              firestore.collection('vehicles').doc(docId);
 
           Map<String, dynamic> updatedData = {
             'collectionId': collectionId,
@@ -221,7 +265,7 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
           'insuranceUrl': insuranceUrl,
           'ecoTestUrl': ecoTestUrl,
           'certificateUrl': certificateUrl,
-          'vehicleData': vehicleData, // Add vehicle data here
+          'vehicleData': vehicleData,
         };
 
         await docRef.set(data);
@@ -247,38 +291,118 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
           ? Center(
               child: CircularProgressIndicator(), // Loading indicator
             )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () => _openFilePicker('insurance'),
-                    child: const Text('Add Insurance'),
-                  ),
-                  if (_insuranceFileName != null)
-                    Text('Insurance File: $_insuranceFileName'),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _openFilePicker('ecoTest'),
-                    child: const Text('Add Eco Test'),
-                  ),
-                  if (_ecoTestFileName != null)
-                    Text('Eco Test File: $_ecoTestFileName'),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => _openFilePicker('certificate'),
-                    child: const Text('Add Certificate'),
-                  ),
-                  if (_certificateFileName != null)
-                    Text('Certificate File: $_certificateFileName'),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _uploadFiles,
-                    child: const Text('Upload'),
-                  ),
-                ],
+          : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: const Text("Request your Revenue License ", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: const Text("Please read all the instructions given below", style: TextStyle(fontSize: 20),),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'You can upload necessary documents in here to get your revenue license.\n'
+                  'Please follow these guidelines when uploading documents:\n'
+                      '- Ensure files are in PDF format.\n'
+                      '- Provide a valid Insurance document.\n'
+                      '- Include a recent Eco Test document.\n'
+                      '- Attach a valid Certificate file.\n\n'
+                      'Click the buttons below to select and upload your files.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+
+              ),
+              SizedBox(height: 20,),
+              SizedBox(
+                width: 250,
+                child: ElevatedButton(
+                  onPressed: () => _openFilePicker('insurance'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue, // Button color
+                    padding: EdgeInsets.symmetric(
+                        vertical: 16.0), // Vertical padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(8.0), // Rounded corners
+                    ),
+                  ),
+                  child: const Text(
+                    'Add Insurance',
+                    style: TextStyle(color: Colors.white), // Text color
+                  ),
+                ),
+              ),
+              if (_insuranceFileName != null)
+                Text('Insurance File: $_insuranceFileName'),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 250,
+                child: ElevatedButton(
+                  onPressed: () => _openFilePicker('ecoTest'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Add Eco Test',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              if (_ecoTestFileName != null)
+                Text('Eco Test File: $_ecoTestFileName'),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 250,
+                child: ElevatedButton(
+                  onPressed: () => _openFilePicker('certificate'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Add Certificate',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              if (_certificateFileName != null)
+                Text('Certificate File: $_certificateFileName'),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 250,
+                child: ElevatedButton(
+                  onPressed: _uploadFiles,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white12,
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Upload',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
     );
   }
 }

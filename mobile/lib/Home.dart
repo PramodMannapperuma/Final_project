@@ -331,6 +331,28 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Divider(thickness: 1),
                   const SizedBox(height: 20),
                   const SizedBox(height: 20),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => SendNot(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: Row(
+                  //     children: [
+                  //       Icon(Icons.person), // Add your desired icon here
+                  //       const SizedBox(
+                  //         width: 10,
+                  //       ), // Add some spacing between the icon and text
+                  //       const Text(
+                  //         "Send Not",
+                  //         style: TextStyle(fontSize: 20),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ],

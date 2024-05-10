@@ -12,10 +12,36 @@ class RepairDetails extends StatefulWidget {
 }
 
 class _RepairDetailsState extends State<RepairDetails> {
-  // Fetch the vehicle number(s) associated with the logged-in user's email
-  Future<List<String>> fetchVehicleNumbersByEmail() async {
+  // Fetch the current user's data
+  Future<Map<String, dynamic>?> fetchCurrentUserDetails() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        // Fetch user details from Firestore
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('users') // Change to your collection name
+            .where('userId', isEqualTo: user.uid) // Adjust to match your field name
+            .limit(1)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          // Assuming there's only one document matching the condition
+          return querySnapshot.docs.first.data() as Map<String, dynamic>?;
+        } else {
+          return null; // Document not found
+        }
+      } catch (e) {
+        // Handle any errors that occurred during fetching
+        print("Error fetching user data: $e");
+        return null;
+      }
+    }
+    return null; // No user logged in
+  }
+
+  // Fetch the vehicle numbers and their associated repairs
+  Future<List<Map<String, dynamic>>> fetchRepairDetails() async {
     try {
-      // Retrieve the currently logged-in user's email
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         print("No user is currently logged in.");
@@ -23,9 +49,6 @@ class _RepairDetailsState extends State<RepairDetails> {
       }
 
       String userEmail = user.email!;
-      print("Logged-in user email: $userEmail");
-
-      // Query the vehicles collection using the user's email
       QuerySnapshot vehicleSnapshot = await FirebaseFirestore.instance
           .collection('vehicles')
           .where('userEmail', isEqualTo: userEmail)
@@ -36,24 +59,10 @@ class _RepairDetailsState extends State<RepairDetails> {
         return [];
       }
 
-      // Extract vehicle numbers from the query results
-      return vehicleSnapshot.docs
+      // Extract the vehicle numbers associated with this email
+      List<String> vehicleNumbers = vehicleSnapshot.docs
           .map((doc) => doc['licensePlateNumber'] as String)
           .toList();
-    } catch (e) {
-      print("Error fetching vehicle numbers: $e");
-      return [];
-    }
-  }
-
-  // Fetch the repair details using vehicle numbers
-  Future<List<Map<String, dynamic>>> fetchRepairDetails() async {
-    try {
-      // Fetch all vehicle numbers associated with the logged-in user
-      List<String> vehicleNumbers = await fetchVehicleNumbersByEmail();
-      if (vehicleNumbers.isEmpty) {
-        return [];
-      }
 
       // Query the repairs collection using the vehicle numbers
       QuerySnapshot repairSnapshot = await FirebaseFirestore.instance
@@ -81,92 +90,115 @@ class _RepairDetailsState extends State<RepairDetails> {
       appBar: AppBar(
         title: const Text("Repair Details"),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: fetchRepairDetails(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: fetchCurrentUserDetails(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text("Error loading repair details"));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No repair details found"));
-          }
+          } else if (userSnapshot.hasError) {
+            return Center(child: Text("Error: ${userSnapshot.error}"));
+          } else if (userSnapshot.hasData && userSnapshot.data != null) {
+            // Extract the user's name from the fetched data
+            String firstName = userSnapshot.data!['firstName'] ?? 'Unknown';
+            String lastName = userSnapshot.data!['lastName'] ?? 'User';
+            String fullName = "$firstName $lastName";
 
-          List<Map<String, dynamic>> repairs = snapshot.data!;
+            return FutureBuilder<List<Map<String, dynamic>>>(
+              future: fetchRepairDetails(),
+              builder: (context, repairSnapshot) {
+                if (repairSnapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (repairSnapshot.hasError) {
+                  return const Center(child: Text("Error loading repair details"));
+                } else if (!repairSnapshot.hasData || repairSnapshot.data!.isEmpty) {
+                  return const Center(child: Text("No repair details found"));
+                }
 
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("Hello,", style: TextStyle(fontSize: 40)),
-                    ],
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("Pramod Mannapperuma", style: TextStyle(fontSize: 30)),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Your past vehicle repairs,",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                    width: MediaQuery.of(context).size.width / 1.1,
-                    child: const Divider(thickness: 1.0),
-                  ),
-                  // Dynamically generate repair widgets based on fetched data
-                  for (var repair in repairs)
-                    GestureDetector(
-                      onTap: () {
-                        String repairId = repair['reapirId'] ?? 'defaultRepairId';
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RepairInfo(repairId: repairId),
+                List<Map<String, dynamic>> repairs = repairSnapshot.data!;
+
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Hello,",
+                              style: TextStyle(fontSize: 40),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              fullName,
+                              style: const TextStyle(fontSize: 30),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Your past vehicle repairs,",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 30,
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          child: const Divider(thickness: 1.0),
+                        ),
+                        for (var repair in repairs)
+                          GestureDetector(
+                            onTap: () {
+                              String repairId = repair['reapirId'] ?? 'defaultRepairId';
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RepairInfo(repairId: repairId),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const Icon(Icons.settings_outlined),
+                                    const SizedBox(width: 40),
+                                    Text(
+                                      repair['repair'] ?? 'Unknown Repair',
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
+                                    const SizedBox(width: 40),
+                                    const Icon(Icons.arrow_forward_ios_rounded),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                  width: MediaQuery.of(context).size.width / 1.1,
+                                  child: const Divider(thickness: 1.0),
+                                ),
+                              ],
+                            ),
                           ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const Icon(Icons.settings_outlined),
-                              const SizedBox(width: 40),
-                              Text(
-                                repair['repair'] ?? 'Unknown Repair',
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                              const SizedBox(width: 40),
-                              const Icon(Icons.arrow_forward_ios_rounded),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 30,
-                            width: MediaQuery.of(context).size.width / 1.1,
-                            child: const Divider(thickness: 1.0),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
-                ],
-              ),
-            ),
-          );
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(child: Text("No user data available"));
+          }
         },
       ),
     );

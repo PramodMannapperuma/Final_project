@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/auth/login.dart';
+import 'package:bcrypt/bcrypt.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -259,6 +260,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _formKey.currentState!.save();
 
       try {
+        String hashedPassword = BCrypt.hashpw(_password, BCrypt.gensalt());
         // Use Firebase Authentication to create a new user
         UserCredential userCredential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -276,7 +278,7 @@ class _SignupScreenState extends State<SignupScreen> {
             'firstName': _firstName,
             'lastName': _lastName,
             'email': _email, // Consider omitting this if privacy is a concern
-            'password': _password,
+            'password': hashedPassword,
             'gender': _gender,
             'role': 'user',
             'userId': user.uid,

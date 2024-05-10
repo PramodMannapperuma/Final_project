@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mobile/repair/repair_details.dart';
 import 'package:mobile/vehicle/report_request.dart';
-import 'package:mobile/vehicle/vehicle_edit.dart';
 import '../screens/profile_view.dart';
 import '../accident/accident_detail.dart';
 import 'get_vehidata.dart';
-import 'dart:io';
+
 
 class VehicleDetails extends StatefulWidget {
   const VehicleDetails({Key? key}) : super(key: key);
@@ -66,6 +65,12 @@ class _VehicleDetailsState extends State<VehicleDetails> {
 
   Widget buildVehicleDetailsPage(
       BuildContext context, Map<String, dynamic> vehicleData) {
+    // String encryptedVin = vehicleData['vin'] ?? 'N/A';
+    // String decryptedVin = 'N/A';
+    //
+    // if (encryptedVin != 'N/A') {
+    //   decryptedVin = EncryptionService.decryptText(encryptedVin);
+    // }
     var imageUrl = vehicleData['imageUrls'];
     String displayedImage;
 
@@ -76,7 +81,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
       displayedImage = imageUrl;
     } else {
       displayedImage =
-          'assets/Images/well.jpg'; // Default image if no URL is provided
+          'assets/Images/acci.jpg'; // Default image if no URL is provided
     }
     List<String> imageUrls = List<String>.from(vehicleData['imageUrls'] ?? []);
     List<Widget> imageSliders = imageUrls
@@ -91,22 +96,22 @@ class _VehicleDetailsState extends State<VehicleDetails> {
       appBar: AppBar(
         title: const Text('Vehicle Profile'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              String vehicleId =
-                  'your-vehicle-id-here'; // Replace this with actual vehicle ID
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VehicleEdit(),
-                ),
-              );
-            },
-          ),
-        ],
+        // actions: [
+          // IconButton(
+          //   icon: Icon(Icons.edit),
+          //   onPressed: () {
+          //     String vehicleId =
+          //         'your-vehicle-id-here'; // Replace this with actual vehicle ID
+          //
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => VehicleEdit(),
+          //       ),
+          //     );
+          //   },
+          // ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -117,8 +122,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 CircleAvatar(
                   backgroundImage: displayedImage != null
                       ? NetworkImage(displayedImage)
-                      : const AssetImage("assets/Images/well.jpg")
-                          as ImageProvider,
+                      : const AssetImage("assets/Images/acci.jpg") as ImageProvider,
                   radius: 60,
                 ),
                 Positioned(
@@ -178,14 +182,7 @@ class _VehicleDetailsState extends State<VehicleDetails> {
               ),
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ProfileDetailColumn(
-                    title: 'Vehicle Identification Number (VIN)',
-                    value: '${vehicleData['vin'] ?? 'N/A'}'),
-              ],
-            ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -212,37 +209,29 @@ class _VehicleDetailsState extends State<VehicleDetails> {
                 ),
               ],
             ),
-            GestureDetector(
-              onTap: () {
-                // Handle tapping on Miles
-              },
-              child: ProfileDetailColumn(
-                title: 'Liscense Plate Number',
-                value: '${vehicleData['licensePlateNumber'] ?? 'N/A'}',
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ProfileDetailColumn(
+                    title: 'Vehicle Identification Number (VIN)',
+                    value: '${vehicleData['vin'] ?? 'N/A'}'),
+              ],
             ),
-            GestureDetector(
-              onTap: () {
-                // Handle tapping on Services
-              },
-              child: ProfileDetailColumn(
-                title: 'Engine Type',
-                value: '${vehicleData['engineType'] ?? 'N/A'}',
-              ),
+            ProfileDetailColumn(
+              title: 'Liscense Plate Number',
+              value: '${vehicleData['licensePlateNumber'] ?? 'N/A'}',
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfileDetails(),
-                  ),
-                );
-              },
-              child: ProfileDetailColumn(
-                title: 'Fuel Type',
-                value: '${vehicleData['fuelType'] ?? 'N/A'}',
-              ),
+            ProfileDetailColumn(
+              title: 'Engine Type',
+              value: '${vehicleData['engineType'] ?? 'N/A'}',
+            ),
+            ProfileDetailColumn(
+              title: 'Fuel Type',
+              value: '${vehicleData['fuelType'] ?? 'N/A'}',
+            ),
+            ProfileDetailColumn(
+              title: 'Miles',
+              value: '${vehicleData['miles'] ?? "N/A"}',
             ),
             ProfileDetailColumn(
               title: 'Horse Power',
