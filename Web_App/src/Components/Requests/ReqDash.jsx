@@ -7,6 +7,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Grid } from "@mui/material";
 import Nav from "../Navigation/Nav";
+import Dashboard from "../Dashboard/DashBord";
 
 const ReqDash = () => {
   const [value, setValue] = React.useState("1");
@@ -27,6 +28,11 @@ const ReqDash = () => {
                 label="Reneval Requests"
                 value="1"
               />
+              <Tab
+                sx={{ fontSize: "1.2rem", fontWeight: "bold" }}
+                label="User Management"
+                value="2"
+              />
               
             </TabList>
           </Box>
@@ -37,8 +43,16 @@ const ReqDash = () => {
               </Grid>
             </Grid>
           </TabPanel>
+          <TabPanel value="2">
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Dashboard />
+              </Grid>
+            </Grid>
+          </TabPanel>
         </TabContext>
       </Box>
+      
     </div>
   );
 };

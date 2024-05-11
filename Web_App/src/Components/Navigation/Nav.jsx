@@ -14,9 +14,7 @@ function Nav() {
           Hello
         </Typography>
         <Button component={Link} to='/' color="inherit">Home</Button>
-        <Button color="inherit">Services</Button>
-        <Button component={Link} to="/dashbord" color="inherit">Users</Button>
-        <Button component={Link} to="/revenue" color="inherit">About</Button>
+        <Button color="inherit">About</Button>
         <Button component={Link} to="/login" color="inherit">Login</Button>
       </Toolbar>
     </AppBar>

@@ -130,9 +130,9 @@ export default function BasicTabs() {
 
   return (
     <div>
-      <Button sx={{marginTop: '60px'}} onClick={toggleDrawer1(true)}>Open Drawer 1</Button>
-      <Button sx={{marginTop: '60px'}} onClick={toggleDrawer2(true)}>Open Drawer 2</Button>
-      <Button sx={{marginTop: '60px'}} onClick={toggleDrawer3(true)}>Open Drawer 3</Button>
+      <Button sx={{marginTop: '60px'}} onClick={toggleDrawer1(true)}></Button>
+      <Button sx={{marginTop: '60px'}} onClick={toggleDrawer2(true)}></Button>
+      <Button sx={{marginTop: '60px'}} onClick={toggleDrawer3(true)}></Button>
       <SwipeableDrawer
         anchor="top"
         open={drawer1Open}

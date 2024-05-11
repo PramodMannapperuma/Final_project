@@ -1,61 +1,42 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Paper, Typography, Table, TableContainer, TableBody, TableRow, TableCell, Button, CircularProgress } from "@mui/material";
+import { Paper, Typography, Table, TableContainer, TableBody, TableRow, TableCell, Button, CircularProgress, Grid } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { firestore } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
-
+import { firestore } from "../../firebase";
+import { Link as RouterLink } from 'react-router-dom';
 const ReDetails = () => {
   const { id } = useParams();
   const [rowData, setRowData] = useState(null);
   const [fileData, setFileData] = useState([]);
-  const [vehicleDetails, setVehicleDetails] = useState();
-  const [loading, setLoading] = useState(true);  // State to handle loading indicator
+  const [vehicleDetails, setVehicleDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);  // Start loading
+      setLoading(true);
       const docRef = doc(firestore, "fileIds", id);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        setRowData(docSnap.data());
-        const fileIds = docSnap.data(); // Contains { certificateId, ecoTestId, insuranceId }
-        const files = [];
-
-        // Use URLs directly from Firestore
-        const certificateUrl = fileIds.certificateUrl;
-        const ecoTestUrl = fileIds.ecoTestUrl;
-        const insuranceUrl = fileIds.insuranceUrl;
-
-
-        // Create file objects with URLs
-        files.push({ key: 'certificateUrl', url: certificateUrl, name: 'Certificate Document' });
-        files.push({ key: 'ecoTestUrl', url: ecoTestUrl, name: 'Eco Test Document' });
-        files.push({ key: 'insuranceUrl', url: insuranceUrl, name: 'Insurance Document' });
+        const fileIds = docSnap.data();
+        const files = [
+          { key: 'certificate', url: fileIds.certificateUrl, name: 'Certificate Document', description: 'Document certifying the vehicle compliance.' },
+          { key: 'ecoTest', url: fileIds.ecoTestUrl, name: 'Eco Test Document', description: 'Results of the ecological impact test.' },
+          { key: 'insurance', url: fileIds.insuranceUrl, name: 'Insurance Document', description: 'Proof of current insurance coverage.' }
+        ];
 
         const vehicleData = fileIds.vehicleData;
-        const vehicleDetails = {
-          make: vehicleData.make,
-          model: vehicleData.model,
-          year: vehicleData.year,
-          engineType: vehicleData.engineType,
-          horsePower: vehicleData.horsePower,
-          licensePlateNumber: vehicleData.licensePlateNumber,
-          color: vehicleData.color,
-          vin: vehicleData.vin,
-          fuelType: vehicleData.fuelType,
-          email: vehicleData.email
-          // Add more vehicle details as needed
-        };
-        console.log(vehicleDetails);
-        setVehicleDetails(vehicleDetails);
+        setVehicleDetails({
+          ...vehicleData,
+          email: vehicleData.email // Optionally include more details
+        });
 
         setFileData(files);
       } else {
         console.log("No such document!");
       }
-      setLoading(false);  // Stop loading
+      setLoading(false);
     };
 
     fetchData();
@@ -66,7 +47,7 @@ const ReDetails = () => {
       elevation={3}
       style={{
         padding: "20px",
-        maxWidth: "600px",
+        maxWidth: "800px",
         margin: "auto",
         marginTop: "50px",
       }}
@@ -83,19 +64,16 @@ const ReDetails = () => {
               <TableBody>
                 {fileData.map((file, index) => (
                   <TableRow key={index}>
-                    <TableCell>{file.key.charAt(0).toUpperCase() + file.key.slice(1)}</TableCell>
                     <TableCell>{file.name}</TableCell>
+                    <TableCell>{file.description}</TableCell>
                     <TableCell>
                       <Button
                         variant="contained"
                         color="primary"
                         startIcon={<CheckIcon />}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.open(file.url, "_blank");
-                        }}
+                        onClick={() => window.open(file.url, "_blank")}
                       >
-                        Check
+                        View
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -103,29 +81,41 @@ const ReDetails = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <div>
-              <Typography variant="h6">Vehicle Details</Typography>
-              <Typography>Make: {vehicleDetails.make}</Typography>
-              <Typography>Model: {vehicleDetails.model}</Typography>
-              <Typography>Year: {vehicleDetails.year}</Typography>
-              <Typography>Engine Type: {vehicleDetails.engineType}</Typography>
-              <Typography>Horse Power: {vehicleDetails.horsePower}</Typography>
-              <Typography>License Plate Number: {vehicleDetails.licensePlateNumber}</Typography>
-              <Typography>Color: {vehicleDetails.color}</Typography>
-              <Typography>VIN: {vehicleDetails.vin}</Typography>
-              <Typography>Fuel Type: {vehicleDetails.fuelType}</Typography>
+          {vehicleDetails && (
+              <Grid container spacing={2}>
+              <Grid item xs={6}><Typography>Make: {vehicleDetails.make}</Typography></Grid>
+              <Grid item xs={6}><Typography>Model: {vehicleDetails.model}</Typography></Grid>
+              <Grid item xs={6}><Typography>Year: {vehicleDetails.year}</Typography></Grid>
+              <Grid item xs={6}><Typography>Engine Type: {vehicleDetails.engineType}</Typography></Grid>
+              <Grid item xs={6}><Typography>Horse Power: {vehicleDetails.horsePower}</Typography></Grid>
+              <Grid item xs={6}><Typography>License Plate Number: {vehicleDetails.licensePlateNumber}</Typography></Grid>
+              <Grid item xs={6}><Typography>Color: {vehicleDetails.color}</Typography></Grid>
+              <Grid item xs={6}><Typography>VIN: {vehicleDetails.vin}</Typography></Grid>
+              <Grid item xs={6}><Typography>Fuel Type: {vehicleDetails.fuelType}</Typography></Grid>
+            </Grid>
+          )}
+                  <div style={{ marginTop: '20px' }}>
+            {/* Generate License Button */}
+            <Button
+                component={RouterLink}
+                to={`/revenue/${id}`}
+                variant="contained"
+                color="primary"
+                style={{ marginRight: '10px' }}  // Add some margin if needed
+            >
+                Generate License
+            </Button>
 
-            </div>
-            <div>
-      {/* Your ReDetails component UI */}
-      <Link to={`/revenue/${id}`}>
-        Generate License
-      </Link>
-    </div>
-                      <br></br>
-  
-          {/* Link back to List */}
-          <Link to="/reqdash">Back to List</Link>
+            {/* Back to List Button */}
+            <Button
+                component={RouterLink}
+                to="/reqdash"
+                variant="contained"
+                color="primary"
+            >
+                Back to List
+            </Button>
+        </div>
         </>
       )}
     </Paper>

@@ -24,26 +24,6 @@ void main() {
       expect(find.text('Please enter your email'), findsOneWidget);
     });
 
-    // testWidgets('Invalid password shows error', (WidgetTester tester) async {
-    //   await tester.pumpWidget(MaterialApp(home: LoginScreen()));
-    //
-    //   await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
-    //   await tester.tap(find.text('Login'));
-    //   await tester.pump();
-    //
-    //   expect(find.text('Please enter your password'), findsOneWidget);
-    // });
-
-    // testWidgets('Successful login navigates to Home screen', (WidgetTester tester) async {
-    //   await tester.pumpWidget(MaterialApp(home: LoginScreen()));
-    //
-    //   await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
-    //   await tester.enterText(find.byKey(Key('passwordField')), 'password');
-    //   await tester.tap(find.text('Login'));
-    //   await tester.pumpAndSettle();
-    //
-    //   expect(find.byType(MyHomePage), findsOneWidget);
-    // });
 
     testWidgets("Tapping 'Sign up' navigates to SignUp screen", (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(home: LoginScreen()));
@@ -54,16 +34,5 @@ void main() {
       expect(find.byType(SignupScreen), findsOneWidget);
     });
 
-    // testWidgets('Login error displays error dialog', (WidgetTester tester) async {
-    //   await tester.pumpWidget(MaterialApp(home: LoginScreen()));
-    //
-    //   await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
-    //   await tester.enterText(find.byKey(Key('passwordField')), 'wrongpassword');
-    //   await tester.tap(find.text('Login'));
-    //   await tester.pumpAndSettle();
-    //
-    //   expect(find.text('Login Error'), findsOneWidget);
-    //   expect(find.text('Error: invalid-email'), findsOneWidget); // Assuming the error message is 'invalid-email'
-    // });
   });
 }

@@ -311,7 +311,8 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
                       '- Ensure files are in PDF format.\n'
                       '- Provide a valid Insurance document.\n'
                       '- Include a recent Eco Test document.\n'
-                      '- Attach a valid Certificate file.\n\n'
+                      '- Check the prices in info page before depositing.\n'
+                      '- Attach the payment receipt.\n\n'
                       'Click the buttons below to select and upload your files.',
                   style: TextStyle(
                     fontSize: 16.0,
@@ -376,7 +377,7 @@ class _PdfFilePickerState extends State<PdfFilePicker> {
                     ),
                   ),
                   child: const Text(
-                    'Add Certificate',
+                    'Add Receipt',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
