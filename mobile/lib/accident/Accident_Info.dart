@@ -67,7 +67,7 @@ class _AccidentInfoState extends State<AccidentInfo> {
                     children: [
                       // Display accident details using the fetched data
                       Text(
-                        accidentData['repair'] ?? 'No Title',
+                        accidentData['accident'] ?? 'No Title',
                         style: const TextStyle(fontSize: 30),
                       ),
                       const SizedBox(height: 10),
@@ -120,9 +120,7 @@ class _AccidentInfoState extends State<AccidentInfo> {
                       ProfileDetailColumn(
                           title: "Location",
                           value: accidentData['location'] ?? "N/A"),
-                      ProfileDetailColumn(
-                          title: "Repairs",
-                          value: accidentData['repair'] ?? "N/A"),
+
                       ProfileDetailColumn(
                         title: 'Documented by',
                         value: accidentData['insurenceEmail'] ?? "N/A",

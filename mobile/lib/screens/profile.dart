@@ -3,7 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile/feedback.dart';
+import 'package:mobile/info.dart';
 import 'package:mobile/screens/profile_view.dart';
+import 'package:mobile/screens/show_revenue.dart';
 
 import '../auth/login.dart';
 
@@ -128,17 +131,19 @@ class _ProfileState extends State<Profile> {
               title: "Settings",
               icon: Icons.settings,
               onPress: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => const EditProfilePage()),
-                // );
+
               },
             ),
             ProfileMenuWidget(
-              title: "Revenue Licence",
+              title: "FeedBack",
               icon: Icons.library_books_sharp,
-              onPress: () {},
+              onPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FeedbackScreen()),
+                );
+              },
             ),
             const Divider(
               thickness: 1,
@@ -146,7 +151,13 @@ class _ProfileState extends State<Profile> {
             ProfileMenuWidget(
               title: "Info",
               icon: Icons.info,
-              onPress: () {},
+              onPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FAQAndPricingScreen()),
+                );
+              },
             ),
             ProfileMenuWidget(
               title: "Log Out",
