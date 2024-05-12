@@ -204,6 +204,15 @@ class _SignupScreenState extends State<SignupScreen> {
                         }
                       },
                       child: Text(_currentStep == 2 ? 'SignUp' : 'Next'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue, // Button background color
+                        onPrimary: Colors.white, // Text and icon color on the button
+                        elevation: 5, // Shadow elevation
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // Rounded corners with a circular radius
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10), // Internal padding of the button
+                      ),
                     ),
                     const SizedBox(width: 16),
                     if (_currentStep > 0)
@@ -292,9 +301,9 @@ class _SignupScreenState extends State<SignupScreen> {
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       } on FirebaseAuthException catch (e) {
-        // Handle errors, such as email already in use or weak password
-        // Show an error message or dialog
-        print(e.message); // Consider using a more user-friendly error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error signing up: ${e.toString()}')),
+        );
       } catch (e) {
         // Handle any other errors
         print(e.toString());

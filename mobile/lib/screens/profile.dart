@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile/feedback.dart';
 import 'package:mobile/info.dart';
+import 'package:mobile/screens/profile_edit.dart';
 import 'package:mobile/screens/profile_view.dart';
 import 'package:mobile/screens/show_revenue.dart';
 
@@ -50,7 +51,7 @@ class _ProfileState extends State<Profile> {
                   radius: 60.0,
                   backgroundImage: _imageFile != null
                       ? FileImage(File(_imageFile!.path))
-                      : const AssetImage("assets/Images/home.jpg")
+                      : const AssetImage("assets/Images/user.png")
                           as ImageProvider,
                 ),
                 Positioned(
@@ -128,10 +129,14 @@ class _ProfileState extends State<Profile> {
               },
             ),
             ProfileMenuWidget(
-              title: "Settings",
+              title: "Edit Profile",
               icon: Icons.settings,
               onPress: () {
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfilePage()),
+                );
               },
             ),
             ProfileMenuWidget(

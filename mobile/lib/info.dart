@@ -111,60 +111,19 @@ class _FAQAndPricingScreenState extends State<FAQAndPricingScreen>
 
   Widget buildPricing() {
     return SingleChildScrollView(
-      child: DataTable(
-        columns: const <DataColumn>[
-          DataColumn(label: Text('Vehicle Type')),
-          DataColumn(label: Text('Price Range')),
-        ],
-        rows: const <DataRow>[
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('Car')),
-              DataCell(Text('\$100 - \$200')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('Motorcycle')),
-              DataCell(Text('\$50 - \$100')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('Truck')),
-              DataCell(Text('\$200 - \$300')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('')),
-              DataCell(Text('')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('')),
-              DataCell(Text('')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('')),
-              DataCell(Text('')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('')),
-              DataCell(Text('')),
-            ],
-          ),
-          DataRow(
-            cells: <DataCell>[
-              DataCell(Text('Truck')),
-              DataCell(Text('\$200 - \$300')),
-            ],
-          ),// Add more rows for other vehicle types
+      child: GridView.count(
+        crossAxisCount: 1, // Number of columns
+        crossAxisSpacing: 0, // Horizontal space between the items
+        mainAxisSpacing: 0, // Vertical space between the items
+        shrinkWrap: true, // Use this to fit the size of the content
+        physics: NeverScrollableScrollPhysics(), // Use this to disable GridView's scrolling
+        children: <Widget>[
+          Image.asset('assets/Images/p1.png'),
+          Image.asset('assets/Images/p2.png'),
+          Image.asset('assets/Images/p3.png'),
+          Image.asset('assets/Images/p4.png'),
+          Image.asset('assets/Images/p5.png'),
+          Image.asset('assets/Images/p6.png'),
         ],
       ),
     );

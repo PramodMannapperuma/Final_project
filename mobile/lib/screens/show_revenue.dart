@@ -121,13 +121,13 @@ class _ShowRevenueState extends State<ShowRevenue> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                          'Issue Date: ${vehicleDetails[''] ?? 'N/A'}'),
+                                          'Issue Date: $formattedDate'),
                                     ],
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('Issue Date: $formattedDate'),
+                                      Text('Exp Date: 2025-05-12'),
                                     ],
                                   )
                                 ],
@@ -197,7 +197,7 @@ class _ShowRevenueState extends State<ShowRevenue> {
                             ],
                           ),
                           Text(
-                            'Fee Information',
+                            'Exp Information',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 2),
@@ -205,8 +205,8 @@ class _ShowRevenueState extends State<ShowRevenue> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text('Make: ${vehicleDetails['make']}'),
-                              Text('Model: ${vehicleDetails['model']}'),
+                              Text('Issue: $formattedDate'),
+                              Text('Exp: 2025-05-12 '),
                             ],
                           ),
                         ],

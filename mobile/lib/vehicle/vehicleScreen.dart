@@ -121,7 +121,7 @@ class _VehicleScreenState extends State<VehicleScreen> {
         ),
       ),
       ProfileMenuWidget(
-        title: "Settings",
+        title: "Edit Vehicle",
         icon: Icons.settings,
         onPress: () => Navigator.push(
           context,
