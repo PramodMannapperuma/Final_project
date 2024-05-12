@@ -43,7 +43,11 @@ There is also an admin who uses the Web app to manage users and issue revenue li
    
 3. **Navigate to the project folder**
     ```bash
-    cd Final_project/mobile
+    cd Final_project-main
+    ```
+
+    ```bash
+    cd mobile
     ```
 
 3. **Install Dependencies:**
@@ -137,7 +141,11 @@ This web-based application complements the Vehicle Repair and Accident Managemen
 
 3. **Navigate to the project directory of web app:**
     ```bash
-    cd Final_project/Web_App
+    cd Final_project
+    ```
+
+    ```bash
+    cd Web_App
     ```
 
 4. **Install Dependencies:**
