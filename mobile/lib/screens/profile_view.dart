@@ -49,7 +49,7 @@ class _ProfileState extends State<ProfileDetails> {
                         height: 115,
                         width: 115,
                         child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/Images/home.jpg"),
+                          backgroundImage: AssetImage("assets/Images/user.png"),
                         ),
                       ),
                     ],
@@ -96,19 +96,8 @@ class _ProfileState extends State<ProfileDetails> {
                             '${userData['userId']?.substring(0, 15) ?? 'N/A'}',
                       ),
                       ProfileDetailRow(
-                          title: 'Date Of Admission',
-                          value: '${userData['date'] ?? 'N/A'}'),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ProfileDetailRow(
                           title: 'Sex',
                           value: '${userData['gender'] ?? 'N/A'}'),
-                      ProfileDetailRow(
-                          title: 'Date Of Birth',
-                          value: '${userData['DOB'] ?? "N/A"}'),
                     ],
                   ),
                   const SizedBox(
@@ -116,9 +105,7 @@ class _ProfileState extends State<ProfileDetails> {
                   ),
                   ProfileDetailColumn(
                       title: 'Email', value: '${userData['email'] ?? 'N/A'}'),
-                  ProfileDetailColumn(
-                      title: 'Contact Number',
-                      value: '${userData['email'] ?? 'N/A'}'),
+
 
                 ],
               );

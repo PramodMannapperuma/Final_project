@@ -1,249 +1,254 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class VehicleEdit extends StatefulWidget {
-  final String vehicleId; // Assuming each vehicle has a unique ID
-
-  const VehicleEdit({Key? key, required this.vehicleId}) : super(key: key);
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
 
   @override
-  State<VehicleEdit> createState() => _VehicleEditState();
+  State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _VehicleEditState extends State<VehicleEdit> {
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
-  Map<String, dynamic> _formData = {
-    'name': '',
-    'registrationNumber': '',
-    'model': '',
-    'color': '',
-    'year': '',
-  };
+class _EditProfilePageState extends State<EditProfilePage> {
+  int _activeStepIndex = 0;
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _profileImages = [];
+  Map<String, dynamic> userData = {};
+  String? documentId; // To store the document ID of the user data
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadVehicleData();
+    fetchUserData();
   }
 
-  Future<void> _loadVehicleData() async {
-    setState(() => _isLoading = true);
-    try {
-      var document = await FirebaseFirestore.instance
-          .collection('vehicles')
-          .doc(widget.vehicleId)
+  Future<void> fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user?.email != null) {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: user!.email)
+          .limit(1)
           .get();
-      if (document.exists) {
-        _formData = document.data()!;
-        setState(() {});
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          userData = snapshot.docs.first.data();
+          documentId = snapshot.docs.first.id;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
-    } catch (e) {
-      print("Error loading data: $e");
     }
-    setState(() => _isLoading = false);
   }
 
-  Future<void> _saveForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      setState(() => _isLoading = true);
-      try {
-        await FirebaseFirestore.instance
-            .collection('vehicles')
-            .doc(widget.vehicleId)
-            .update(_formData);
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Vehicle details updated successfully!')));
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to update vehicle details')));
-        print("Error updating data: $e");
-      }
-      setState(() => _isLoading = false);
+  Future<void> uploadUserDataWithImages() async {
+    if (documentId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No user data found to update.')),
+      );
+      return;
     }
+
+    List<String> imageUrls = await uploadImagesAndGetUrls();
+    userData['imageUrls'] = imageUrls;
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(documentId)
+        .update(userData)
+        .then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully!')),
+      );
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: $error')),
+      );
+    });
+  }
+
+  Future<List<String>> uploadImagesAndGetUrls() async {
+    List<String> imageUrls = [];
+    for (var image in _profileImages) {
+      String fileName = 'users/${DateTime.now().millisecondsSinceEpoch}_${image.name}';
+      File file = File(image.path);
+      try {
+        TaskSnapshot snapshot = await FirebaseStorage.instance.ref(fileName).putFile(file);
+        String imageUrl = await snapshot.ref.getDownloadURL();
+        imageUrls.add(imageUrl);
+      } catch (e) {
+        print("Error uploading image: $e");
+      }
+    }
+    return imageUrls;
+  }
+
+  List<Step> stepList() => [
+    Step(
+      state: _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
+      isActive: _activeStepIndex >= 0,
+      title: Text('Photos'),
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildImageListView(),
+            ElevatedButton(
+              onPressed: _pickImages,
+              child: Text('Add Vehicle Images'),
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+      ),
+    ),
+    Step(
+      state: _activeStepIndex <= 1 ? StepState.editing : StepState.complete,
+      isActive: _activeStepIndex >= 1,
+      title: Text('User Data'),
+      content: Column(
+        children: [
+          TextFormField(
+            initialValue: userData['firstName'] ?? 'N/A',
+            decoration: InputDecoration(
+              labelText: 'First Name',
+            ),
+            onChanged: (value) {
+              setState(() {
+                userData['firstName'] = value;
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter first name';
+              }
+              return null; // indicates the input is correct
+            },
+          ),
+          TextFormField(
+            initialValue: userData['lastName'],
+            decoration: InputDecoration(
+              labelText: 'Last Name',
+            ),
+            onChanged: (value) =>
+                setState(() => userData['lastName'] = value),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the Make';
+              }
+              return null; // indicates the input is correct
+            },
+          ),
+          TextFormField(
+            initialValue: userData['email'],
+            decoration: InputDecoration(
+              labelText: 'Email',
+            ),
+            onChanged: (value) =>
+                setState(() => userData['email'] = value),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the Email';
+              }
+              return null; // indicates the input is correct
+            },
+          ),
+          TextFormField(
+            initialValue: userData['gender'],
+            decoration: InputDecoration(
+              labelText: 'Gender',
+            ),
+            onChanged: (value) =>
+                setState(() => userData['gender'] = value),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the gender';
+              }
+              return null; // indicates the input is correct
+            },
+          ),
+          TextFormField(
+            initialValue: userData['password'],
+            decoration: InputDecoration(
+              labelText: 'Change Password',
+            ),
+            onChanged: (value) =>
+                setState(() => userData['password'] = value),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the password';
+              }
+              return null; // indicates the input is correct
+            },
+          ),
+        ],
+      ),
+    ),
+
+  ];
+
+  Future<void> _pickImages() async {
+    final List<XFile>? selectedImages = await _picker.pickMultiImage();
+    if (selectedImages != null && selectedImages.isNotEmpty) {
+      setState(() {
+        _profileImages.addAll(selectedImages);
+      });
+    }
+  }
+
+  Widget _buildImageListView() {
+    return SizedBox(
+      height: 300, // Set the height of the horizontal list
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _profileImages.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.file(File(_profileImages[index].path)),
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit User Profile'),
+        title: Text('Edit Profile'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _saveForm,
-          ),
-        ],
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      // Background cover photo
-                      Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/Images/cv.jpg"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      // Circle avatar
-                      Positioned(
-                        bottom: 0, // Adjust the bottom position as needed
-                        child: CircleAvatar(
-                          backgroundImage:
-                          AssetImage("assets/Images/well.jpg"),
-                          radius: 60,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.1,
-                  child: const Divider(
-                    thickness: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Shelby GT500',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ],
-                ),
-
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.1,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        initialValue: _formData['description'],
-                        decoration: InputDecoration(
-                          labelText: 'Description',
-                        ),
-                        onSaved: (value) =>
-                        _formData['description'] = value ?? '',
-                        validator: (value) => value!.isEmpty
-                            ? 'This Field Cannot be Empty'
-                            : null,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                ProfileDetailColumnEdit(
-                  title: 'Vehicle Identification Number (VIN)', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Make', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Model', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Year', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Color', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'License Plate Number', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Engine Type', initialValue: '' ,onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Fuel Type', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Horse Power', initialValue: '', onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-                ProfileDetailColumnEdit(
-                  title: 'Transmission', initialValue: '',onSaved: (String? value) { setState(() => _formData['vin'] = value ?? ''); },),
-              ],
-            ),
-          ),
-        ),
+          : Stepper(
+        currentStep: _activeStepIndex,
+        type: StepperType.horizontal,
+        steps: stepList(),
+        onStepContinue: () {
+          if (_activeStepIndex < (stepList().length - 1)) {
+            setState(() => _activeStepIndex += 1);
+          } else {
+            // Last step
+            uploadImagesAndGetUrls();
+            uploadUserDataWithImages();
+          }
+        },
+        onStepCancel: () {
+          if (_activeStepIndex == 0) {
+            return;
+          }
+          _activeStepIndex -= 1;
+          setState(() {});
+        },
       ),
-    );
-  }
-}
-
-class ProfileDetailColumnEdit extends StatefulWidget {
-  final String title;
-  final String initialValue;
-  final Function(String? value) onSaved;
-
-  const ProfileDetailColumnEdit(
-      {Key? key, required this.title, required this.initialValue, required this.onSaved})
-      : super(key: key);
-
-  @override
-  _ProfileDetailColumnEditState createState() =>
-      _ProfileDetailColumnEditState();
-}
-
-class _ProfileDetailColumnEditState extends State<ProfileDetailColumnEdit> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.initialValue);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.title,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: 'Enter ${widget.title}',
-                  border: UnderlineInputBorder(),
-                ),
-                onSaved: (value) => widget.onSaved(value ?? ''),
-                validator: (value) => value!.isEmpty ? 'This field cannot be empty' : null,
-              ),
-              const SizedBox(height: 10.0),
-
-            ],
-          ),
-        ),
-        const Icon(
-          Icons.edit,
-          size: 15.0,
-        ),
-      ],
     );
   }
 }

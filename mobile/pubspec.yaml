@@ -100,6 +100,14 @@ flutter:
     - assets/Images/garage2.webp
     - assets/Images/garage1.webp
     - assets/Images/insu.webp
+    - assets/Images/appicon.png
+    - assets/Images/user.png
+    - assets/Images/p1.png
+    - assets/Images/p2.png
+    - assets/Images/p3.png
+    - assets/Images/p4.png
+    - assets/Images/p5.png
+    - assets/Images/p6.png
   #   - images/a_dot_ham.jpeg
 
 

@@ -38,12 +38,9 @@ class _LoginFormState extends State<LoginForm> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text(
-              "welcome Back",
-              style: TextStyle(fontSize: 60),
-            ),
+            Image.asset('assets/Images/appicon.png', width: 1000, height: 200),
             const SizedBox(height: 16),
             Form(
               key: _formKey,
